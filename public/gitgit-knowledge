@@ -1,0 +1,699 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>Git知识总结 | arlendp&#39;s blog</title>
+    <meta name="author" content="arlendp">
+    
+    <meta name="description" content="git是平常软件开发中经常使用的版本控制系统，本文对git的原理、基础和配置方式进行了介绍，同时总结了平时使用过程中常见的git操作。">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="Git知识总结"/>
+    <meta property="og:site_name" content="arlendp"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="arlendp" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="cyan">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">arlendp</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav cyan darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ww2.sinaimg.cn/small/74990035jw1f1rjkd681bj20rs0rsdhg.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">arlendp</p>
+                        <p class="desc">Web前端</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav cyan darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Web开发/">
+                    Web开发 <span class="right">3 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/JS/">
+                    JS <span class="right">2 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/CSS/">
+                    CSS <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Git/">
+                    Git <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper cyan">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/Git/">Git</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>Git知识总结</h1>
+    
+
+
+            </div>
+            <time class="orange-link-context" datetime="2015-12-25T16:00:00.000Z"><a href="/gitgit-knowledge">2015-12-26</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Git/" class="chip orange">Git</a>
+        
+    </div>
+
+
+            <div class="toc orange-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#1-概念"><span class="section table-of-contents-text">1. 概念</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#2-基础"><span class="section table-of-contents-text">2. 基础</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#3-git配置"><span class="section table-of-contents-text">3. git配置</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#4-git基础操作"><span class="section table-of-contents-text">4. git基础操作</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-1-创建git仓库"><span class="section table-of-contents-text">4.1 创建git仓库</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-2-文件状态"><span class="section table-of-contents-text">4.2 文件状态</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-3-git-add命令"><span class="section table-of-contents-text">4.3 git add命令</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#4-3-1-跟踪新文件"><span class="section table-of-contents-text">4.3.1 跟踪新文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#4-3-2-暂存已修改文件"><span class="section table-of-contents-text">4.3.2 暂存已修改文件</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-4-git-status命令"><span class="section table-of-contents-text">4.4 git status命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-5-gitignore文件"><span class="section table-of-contents-text">4.5 .gitignore文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-6-git-diff命令"><span class="section table-of-contents-text">4.6 git diff命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-7-git-commit命令"><span class="section table-of-contents-text">4.7 git commit命令</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-8-移除文件"><span class="section table-of-contents-text">4.8 移除文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-9-移动文件"><span class="section table-of-contents-text">4.9 移动文件</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-10-撤销操作"><span class="section table-of-contents-text">4.10 撤销操作</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#4-11-远程仓库"><span class="section table-of-contents-text">4.11 远程仓库</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#5-git分支"><span class="section table-of-contents-text">5. git分支</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#5-1-创建分支"><span class="section table-of-contents-text">5.1 创建分支</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#5-2-切换分支"><span class="section table-of-contents-text">5.2 切换分支</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#5-3-删除分支"><span class="section table-of-contents-text">5.3 删除分支</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#5-4-分支合并"><span class="section table-of-contents-text">5.4 分支合并</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#5-5-跟踪远程分支"><span class="section table-of-contents-text">5.5 跟踪远程分支</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#5-6-删除远程分支"><span class="section table-of-contents-text">5.6 删除远程分支</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry orange-link-context">
+                <p>git是平常软件开发中经常使用的版本控制系统，本文对git的原理、基础和配置方式进行了介绍，同时总结了平时使用过程中常见的git操作。<br><a id="more"></a></p>
+<h2 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h2><ol>
+<li>集中式版本控制系统：有一个单一的集中管理的服务器，开发人员都可以连接到这台服务器，进行协同工作。</li>
+</ol>
+<ul>
+<li>优点是系统容易管理和维护</li>
+<li>缺点是如果中央服务器出现故障，工作将不能进行</li>
+</ul>
+<ol>
+<li>分布式版本控制系统：不是只提取最新版本的文件快照，而是将整个代码仓库拷贝到本地，即使服务器故障也能通过本地仓库进行完整的恢复。</li>
+</ol>
+<h2 id="2-基础"><a href="#2-基础" class="headerlink" title="2. 基础"></a>2. 基础</h2><ul>
+<li><p>git保存数据是保存整个文件系统的一个快照<img src="https://git-scm.com/book/en/v2/book/01-introduction/images/snapshots.png" alt="git-snapshot"></p>
+</li>
+<li><p>其他大部分系统保存的是文件的变更信息<img src="https://git-scm.com/book/en/v2/book/01-introduction/images/deltas.png" alt="delta"></p>
+</li>
+<li><p>git大部分操作都是在本地完成的，因此速度很快。即使没有网络，也可以提交文件，之后再上传</p>
+</li>
+<li><p>git通过SHA-1（哈希）计算校验和，由40个十六进制数组成的字符串。git数据库中保存的信息都是通过文件内容的hash值进行索引的而不是文件名。</p>
+</li>
+<li><p>git的三个工作区域</p>
+<ul>
+<li>git仓库：用来保存项目的数据以及数据库，当从其他地方clone项目时，拷贝的就是这里面的数据。</li>
+<li>工作目录：存放的是项目某个版本的内容，存放于磁盘可供修改等操作，来源于git仓库中的压缩数据库。</li>
+<li>暂存区域： 是一个文件，保存了将提交的文件信息。</li>
+</ul>
+</li>
+<li><p>git工作流程</p>
+<ul>
+<li>在工作目录中修改文件(modified)</li>
+<li>将修改的文件暂存在暂存区域(staged)</li>
+<li>提交更新，将暂存区的文件存储到git仓库中(commited)</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-git配置"><a href="#3-git配置" class="headerlink" title="3. git配置"></a>3. git配置</h2><p>git config</p>
+<ul>
+<li>–system：系统上所有用户及仓库的通用配置</li>
+<li>–global：针对当前用户的配置</li>
+<li>–config：针对当前仓库的配置</li>
+</ul>
+<p>上述配置具有优先级，由上往下递增，高优先级的覆盖低优先级的配置。</p>
+<p>第一次使用时会配置个人信息<br><code>$ git config --global user.name yourname</code><br><code>$ git config --global user.email your@email.com</code><br>这些信息会写入每一次提交中，该配置只需配置一次。若想对某个项目使用特定的用户信息，通过git config来配置。<br>可通过git config –list查看所有配置信息，也可通过如git config user.name来查看用户名</p>
+<h2 id="4-git基础操作"><a href="#4-git基础操作" class="headerlink" title="4. git基础操作"></a>4. git基础操作</h2><h3 id="4-1-创建git仓库"><a href="#4-1-创建git仓库" class="headerlink" title="4.1 创建git仓库"></a>4.1 创建git仓库</h3><ul>
+<li>在已有项目中创建git仓库：通过<code>$ git init</code>命令创建一个.git子目录，里面存储了git仓库初始化时的必须文件，但不包括项目文件。</li>
+<li>克隆仓库：通过<code>$ git clone theUrlYouWantToClone</code>，会克隆该仓库的所有版本的文件而不是最新版本的文件。执行该操作后会在当前目录下创建一个与该仓库同名的目录，并在该目录下初始化一个<code>.git</code>文件夹，将远程仓库中的数据拉取到该文件夹，并从中读取最新版本的项目文件，拷贝至其同级目录。<ul>
+<li>可通过<code>$ git clone theUrlYouWantToClone myProjectName</code>修改仓库名称</li>
+</ul>
+</li>
+</ul>
+<p><strong><code>theUrlYouWantToClone</code></strong>可支持多种协议，git中常用到的是https、git和SSH协议。</p>
+<h3 id="4-2-文件状态"><a href="#4-2-文件状态" class="headerlink" title="4.2 文件状态"></a>4.2 文件状态</h3><p>文件具有两种状态<strong>已跟踪</strong>和<strong>未跟踪</strong>。</p>
+<ul>
+<li>已跟踪的文件指的是已被纳入版本控制的文件，它们可能处于<em>未修改</em>、<em>已修改</em>、<em>已暂存</em>等状态。</li>
+<li>将文件从git中移除、新建立一个文件等操作产生的文件都会处于未跟踪状态。<br>git版本控制下文件的生命周期<br><img src="https://git-scm.com/book/en/v2/book/02-git-basics/images/lifecycle.png" alt="life-cycle"></li>
+</ul>
+<h3 id="4-3-git-add命令"><a href="#4-3-git-add命令" class="headerlink" title="4.3 git add命令"></a>4.3 git add命令</h3><h4 id="4-3-1-跟踪新文件"><a href="#4-3-1-跟踪新文件" class="headerlink" title="4.3.1 跟踪新文件"></a>4.3.1 跟踪新文件</h4><p>通过<code>$ git add filename</code>、<code>$ git add pathname</code>可分别跟踪某个文件和某个路径下的所有文件，或者通过<code>$ git add .</code>来跟踪所有文件。</p>
+<h4 id="4-3-2-暂存已修改文件"><a href="#4-3-2-暂存已修改文件" class="headerlink" title="4.3.2 暂存已修改文件"></a>4.3.2 暂存已修改文件</h4><p>与上述方法相同</p>
+<p>因此，<code>git add</code>具有多种功能，可理解为<strong>向下次提交中添加内容</strong></p>
+<h3 id="4-4-git-status命令"><a href="#4-4-git-status命令" class="headerlink" title="4.4 git status命令"></a>4.4 git status命令</h3><p>该命令用于查看文件状态<br>也可通过<code>$ git status -s</code>或者<code>$ git status --short</code>查看简写的文件状态。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ git status -s</div><div class="line">M README</div><div class="line">MM Rakefile</div><div class="line">A  lib/git.rb</div><div class="line">M  lib/simplegit.rb</div><div class="line">?? LICENSE.txt</div></pre></td></tr></table></figure>
+<p>各种记号的解释如下：</p>
+<ul>
+<li>??：未跟踪文件</li>
+<li>A：新添加到暂存区的文件</li>
+<li>_M：文件被修改但未添加到暂存区</li>
+<li>M_：文件被修改且已添加到暂存区</li>
+<li>MM：文件被修改且已添加到暂存区后又被修改</li>
+</ul>
+<h3 id="4-5-gitignore文件"><a href="#4-5-gitignore文件" class="headerlink" title="4.5 .gitignore文件"></a>4.5 .gitignore文件</h3><p>忽略文件的具体格式可见<a href="https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E8%AE%B0%E5%BD%95%E6%AF%8F%E6%AC%A1%E6%9B%B4%E6%96%B0%E5%88%B0%E4%BB%93%E5%BA%93#忽略文件" target="_blank" rel="external">忽略文件</a></p>
+<h3 id="4-6-git-diff命令"><a href="#4-6-git-diff命令" class="headerlink" title="4.6 git diff命令"></a>4.6 git diff命令</h3><p>git diff命令用于查看文件的修改，与git status相比可以具体显示修改的内容。</p>
+<ul>
+<li><code>$ git diff</code>显示的是已修改但未暂存的文件内容</li>
+<li><code>$ git diff --cached</code>或<code>$ git diff --staged</code>查看已暂存但未提交的内容</li>
+</ul>
+<h3 id="4-7-git-commit命令"><a href="#4-7-git-commit命令" class="headerlink" title="4.7 git commit命令"></a>4.7 git commit命令</h3><p>通过git commit命令可将暂存区内的文件进行提交，而未暂存的文件则不会被提交。<br>可用<code>$ git commit</code>命令按提示完成提交或直接通过<code>$ git commit -m &quot;yourComments&quot;</code>进行提交说明并提交。<br>若想对所有已暂存和未暂存的文件进行提交可使用<code>$ git commit -a -m &quot;yourComments&quot;</code>进行提交，这样可简化操作步骤。</p>
+<h3 id="4-8-移除文件"><a href="#4-8-移除文件" class="headerlink" title="4.8 移除文件"></a>4.8 移除文件</h3><p>移除文件需要git remove操作。</p>
+<ul>
+<li>通过<code>$ git rm fileName</code>即可将文件移出git版本控制并同时删除工作区中的文件，之后执行commit操作提交即可。</li>
+<li>若是直接手动将文件删除，此时文件将会处于未暂存状态，通过git add或git rm操作便可进入已暂存状态，之后执行commit操作即可。</li>
+<li>若文件进过修改并送入暂存区，需要用<code>$ git rm -f fileName</code>才能强制删除或通过上述第一种方式删除。</li>
+<li>若是要将文件从git版本控制中删除但又不想从工作区中删除，则可通过<code>$ git rm --cached fileName</code>命令来实现。</li>
+</ul>
+<h3 id="4-9-移动文件"><a href="#4-9-移动文件" class="headerlink" title="4.9 移动文件"></a>4.9 移动文件</h3><p>移动文件操作通过<code>$ git mv fileFrom fileTo</code>来实现，该操作执行过程实际上是执行了删除fileFrom文件之后添加fileTo文件。</p>
+<h3 id="4-10-撤销操作"><a href="#4-10-撤销操作" class="headerlink" title="4.10 撤销操作"></a>4.10 撤销操作</h3><ol>
+<li><p>修改提交文件</p>
+<ul>
+<li>若提交后发现漏掉其他文件，可通过<code>$ git commit --amend</code>操作将当前暂存区的文件加入上次提交中，相当于只存在一次提交。</li>
+<li>若是想修改提交文件的提交信息，可通过<code>$ git commit --amend -m &quot;newComments&quot;</code></li>
+</ul>
+</li>
+<li><p>取消暂存文件</p>
+<ul>
+<li>通过<code>$ git reset HEAD fileName</code>可将文件从暂存区中移除，进入未暂存状态。</li>
+</ul>
+</li>
+<li><p>取消已修改文件</p>
+<ul>
+<li>通过<code>$ git checkout -- fileName</code>将已修改的文件还原至上一次未修改时的状态。</li>
+</ul>
+</li>
+</ol>
+<h3 id="4-11-远程仓库"><a href="#4-11-远程仓库" class="headerlink" title="4.11 远程仓库"></a>4.11 远程仓库</h3><p>git项目的协作时会用到远程仓库，当克隆一个项目时，会有一个默认的名为<strong>origin</strong>的远程仓库。</p>
+<ul>
+<li>可通过<code>$ git remote</code>查看所有远程仓库或<code>$ git remote -v</code>查看所有远程仓库的具体信息。通过<code>$ git remote show remoteName</code>查看指定远程仓库的详细信息。</li>
+<li>通过<code>$ git remote add shortNameForTheRemoteRepository RepositoryUrl</code></li>
+<li>通过<code>$ git fetch shortName</code>可获取该远程仓库中的所有信息，但不会合并或修改当前工作区的文件</li>
+<li>通过<code>$ git pull</code>命令获取远程仓库的数据并合并到当前分支，默认情况下，本地的master分支会跟踪远程仓库的master分支。</li>
+<li>通过<code>$ git push remoteName branchName</code>将当前分支推送到指定远程仓库的指定分支上。</li>
+<li>重命名远程仓库可使用<code>$ git remote rename originalName currentName</code></li>
+<li>删除远程仓库可使用<code>$ git remote rm repositoryName</code></li>
+</ul>
+<h2 id="5-git分支"><a href="#5-git分支" class="headerlink" title="5. git分支"></a>5. git分支</h2><p>使用分支可以将开发工作从主线上进行分离，git的默认分支是<strong>master</strong>分支。git使用<strong>HEAD</strong>指针指向当前分支，可看做当前分支的一个别名。</p>
+<h3 id="5-1-创建分支"><a href="#5-1-创建分支" class="headerlink" title="5.1 创建分支"></a>5.1 创建分支</h3><p>创建分支实际上就是创建了一个指向当前项目的指针，通过<code>$ git branch</code>命令可以查看当前分支，<code>$ git branch branchName</code>用于创建分支。</p>
+<h3 id="5-2-切换分支"><a href="#5-2-切换分支" class="headerlink" title="5.2 切换分支"></a>5.2 切换分支</h3><p>命令<code>$ git checkout branchName</code>用于切换分支，切换分支后当前的工作区的文件也会随之改变。<br><strong>git分支是以提交的文件为基础的，一般情况下在修改文件后只有当提交了文件才能切换到另一个分支，但也有特殊情况，以branch1和branch2两个分支为例，若在branch1中添加了新文件，此时切换到branch2分支可以看到该文件，若此时提交则该文件属于branch2分支，再次切回branch1中不会保留该文件</strong></p>
+<h3 id="5-3-删除分支"><a href="#5-3-删除分支" class="headerlink" title="5.3 删除分支"></a>5.3 删除分支</h3><p>通过<code>$ git branch -d branchName</code>可以删除该分支</p>
+<h3 id="5-4-分支合并"><a href="#5-4-分支合并" class="headerlink" title="5.4 分支合并"></a>5.4 分支合并</h3><p>首先通过<code>$ git checkout branchName</code>切换到某一分支，如master分支，接下来执行<code>$ git merge branchName</code>将对应分支合并到master中。<br><strong>合并过程中如果两个分支对同一个文件进行了操作，则会产生冲突，需要手动解决，产生冲突的内容会在工作区中的相应文件中被标记出来，需要自己去判断保留哪一份修改，之后执行提交即可。</strong></p>
+<h3 id="5-5-跟踪远程分支"><a href="#5-5-跟踪远程分支" class="headerlink" title="5.5 跟踪远程分支"></a>5.5 跟踪远程分支</h3><p>若想跟踪远程分支可以通过<code>$ git checkout --track remoteRepository/remoteBranch</code>，也可通过<code>$ git checkout -b branchName remoteRepository/remoteBranch</code>新建分支并跟踪远程分支，两者的不同点只是新建分支的名字不同。<br>若本地已有分支，则可通过<code>$ git branch -u remoteRepository/remoteBranch</code>添加或修改跟踪。<br>通过<code>$ git branch -vv</code>命令可以查看远程分支的跟踪信息。</p>
+<h3 id="5-6-删除远程分支"><a href="#5-6-删除远程分支" class="headerlink" title="5.6 删除远程分支"></a>5.6 删除远程分支</h3><p>命令<code>$ git push remoteRepository --delete remoteBranch</code>可用于删除远程分支。</p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="gitgit-knowledge" data-title="Git知识总结" data-url="http://arlendp.me/gitgit-knowledge"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'arlendp'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large orange">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse green"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer cyan darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="https://github.com/arlendp" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright orange-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('green lighten-2');
+
+            
+            // 添加new标签
+            $('').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=57839780" charset="UTF-8"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>
