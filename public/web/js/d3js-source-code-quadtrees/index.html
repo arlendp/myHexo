@@ -1,0 +1,603 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>d3.js源码分析——Quadtrees | arlendp&#39;s blog</title>
+    <meta name="author" content="arlendp">
+    
+    <meta name="description" content="一个分享web前端技术的个人博客">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="d3.js源码分析——Quadtrees"/>
+    <meta property="og:site_name" content="arlendp"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="arlendp" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="cyan">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">arlendp</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav cyan darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://tva2.sinaimg.cn/crop.0.0.720.720.180/ba00f58bjw8ewfzppyd46j20k00k03zn.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">arlendp</p>
+                        <p class="desc">Web前端</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav cyan darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Web开发/">
+                    Web开发 <span class="right">14 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/JS/">
+                    JS <span class="right">12 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/CSS/">
+                    CSS <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/HTML/">
+                    HTML <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Git/">
+                    Git <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper cyan">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/Web开发/">Web开发</a><a class="breadcrumb" href="/categories/Web开发/JS/">JS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>d3.js源码分析——Quadtrees</h1>
+    
+
+
+            </div>
+            <time class="orange-link-context" datetime="2016-09-19T16:00:00.000Z"><a href="/web/js/d3js-source-code-quadtrees/">2016-09-20</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Web开发/" class="chip orange">Web开发</a>
+        
+            <a href="/tags/D3-js/" class="chip orange">D3.js</a>
+        
+    </div>
+
+
+            <div class="toc orange-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#d3-quadtree"><span class="section table-of-contents-text">d3.quadtree</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-add"><span class="section table-of-contents-text">quadtree.add</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-addAll"><span class="section table-of-contents-text">quadtree.addAll</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-cover"><span class="section table-of-contents-text">quadtree.cover</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-extend"><span class="section table-of-contents-text">quadtree.extend</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-data"><span class="section table-of-contents-text">quadtree.data</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-find"><span class="section table-of-contents-text">quadtree.find</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-remove"><span class="section table-of-contents-text">quadtree.remove</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-visit"><span class="section table-of-contents-text">quadtree.visit</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-visitAfter"><span class="section table-of-contents-text">quadtree.visitAfter</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quadtree-copy"><span class="section table-of-contents-text">quadtree.copy</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#quad对象"><span class="section table-of-contents-text">quad对象</span></a></li></ol>
+</div>
+
+
+            <div class="entry orange-link-context">
+                <p>四叉树算法用于将二维空间划分成更多的矩形部分，将每个矩形划分成四个大小相等的区域，常用于碰撞检测算法，d3中的forceCollide、forceManyBody等都用到了该数据结构。<br><a id="more"></a></p>
+<h2 id="d3-quadtree"><a href="#d3-quadtree" class="headerlink" title="d3.quadtree"></a>d3.quadtree</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">   * d3.quadtree用于生成四叉树</div><div class="line">   * @param  &#123;object&#125; nodes 将要添加到quadtree中的所有节点</div><div class="line">   * @param  &#123;function&#125; x     用于获取节点的x坐标的函数</div><div class="line">   * @param  &#123;function&#125; y     用于获取节点的y坐标的函数</div><div class="line">   * @return &#123;object&#125;       该quadtree对象</div><div class="line">   */</div><div class="line">function quadtree(nodes, x, y) &#123;</div><div class="line">    var tree = new Quadtree(x == null ? defaultX : x, y == null ? defaultY : y, NaN, NaN, NaN, NaN);</div><div class="line">    return nodes == null ? tree : tree.addAll(nodes);</div><div class="line">&#125;</div><div class="line">  /**</div><div class="line">   * 四叉树的构造函数</div><div class="line">   * @param &#123;function&#125; x  获取x坐标</div><div class="line">   * @param &#123;function&#125; y  获取y坐标</div><div class="line">   * @param &#123;number&#125; x0 [x0, y0]到[x1, y1]为该quadtree的矩形区域的范围</div><div class="line">   * @param &#123;number&#125; y0 [x0, y0]到[x1, y1]为该quadtree的矩形区域的范围</div><div class="line">   * @param &#123;number&#125; x1 [x0, y0]到[x1, y1]为该quadtree的矩形区域的范围</div><div class="line">   * @param &#123;number&#125; y1 [x0, y0]到[x1, y1]为该quadtree的矩形区域的范围</div><div class="line">   */</div><div class="line">function Quadtree(x, y, x0, y0, x1, y1) &#123;</div><div class="line">    this._x = x;</div><div class="line">    this._y = y;</div><div class="line">    this._x0 = x0;</div><div class="line">    this._y0 = y0;</div><div class="line">    this._x1 = x1;</div><div class="line">    this._y1 = y1;</div><div class="line">    this._root = undefined;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-add"><a href="#quadtree-add" class="headerlink" title="quadtree.add"></a>quadtree.add</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">function tree_add(d) &#123;</div><div class="line">    var x = +this._x.call(null, d),</div><div class="line">        y = +this._y.call(null, d);</div><div class="line">    return add(this.cover(x, y), x, y, d);</div><div class="line">  &#125;</div><div class="line">  /* d3.quadtree的add方法，用于添加node</div><div class="line">   * add方法的执行流程如下：</div><div class="line">   * 1. 首次添加data0时，由于_root不存在，直接对其赋值data并返回。</div><div class="line">   * 2. 第二次添加data1时，node中此时是第一次添加的data0，执行do while循环，为_root赋值一个空数组。判断data1和data0是否是在一个象限(这里将一个区域划分成的四块叫做象限)，如果不在则根据索引分别添加至数组中；</div><div class="line">   * 如果在则对该象限再次划分四个区域，继续判断是否在同一个象限。</div><div class="line">   * 3. 之后每次添加data时，都会先查找该节点属于哪个象限，根据索引查找node，如果是数组则说明该区域有节点且已经再次划分了象限，则继续进入查找；如果是对象，则说明该区域只有一个节点，此时会对该区域进行划分执行步骤2中的过程；如果是undefined则直接插入该出。</div><div class="line">   * </div><div class="line">   */</div><div class="line">function add(tree, x, y, d) &#123;</div><div class="line">    if (isNaN(x) || isNaN(y)) return tree;</div><div class="line"></div><div class="line">    var parent,</div><div class="line">        node = tree._root,</div><div class="line">        leaf = &#123;data: d&#125;,</div><div class="line">        x0 = tree._x0,</div><div class="line">        y0 = tree._y0,</div><div class="line">        x1 = tree._x1,</div><div class="line">        y1 = tree._y1,</div><div class="line">        //(xm, ym)表示该区域的中心点</div><div class="line">        xm,</div><div class="line">        ym,</div><div class="line">        xp,</div><div class="line">        yp,</div><div class="line">        right,</div><div class="line">        bottom,</div><div class="line">        i,</div><div class="line">        j;</div><div class="line"></div><div class="line">    // 如果treenode当前不包含任何node，将leaf作为其节点</div><div class="line">    if (!node) return tree._root = leaf, tree;</div><div class="line"></div><div class="line">    // 看(x, y)是否和已有的点在一个象限中，若不是则直接插入，否则往下继续执行</div><div class="line">    while (node.length) &#123;</div><div class="line">      if (right = x &gt;= (xm = (x0 + x1) / 2)) x0 = xm; else x1 = xm;</div><div class="line">      if (bottom = y &gt;= (ym = (y0 + y1) / 2)) y0 = ym; else y1 = ym;</div><div class="line">      if (parent = node, !(node = node[i = bottom &lt;&lt; 1 | right])) return parent[i] = leaf, tree;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 判断(x, y)是否已存在当前节点中</div><div class="line">    xp = +tree._x.call(null, node.data);</div><div class="line">    yp = +tree._y.call(null, node.data);</div><div class="line">    if (x === xp &amp;&amp; y === yp) return leaf.next = node, parent ? parent[i] = leaf : tree._root = leaf, tree;</div><div class="line"></div><div class="line">    // 将当前区域进行划分，直至(x, y)和之前的节点不在同一个象限内</div><div class="line">    do &#123;</div><div class="line">      //parent = parent[i] = new Array(4)会为parent赋值一个空数组，但是由于node = parent，node会形成一个多维数组</div><div class="line">      parent = parent ? parent[i] = new Array(4) : tree._root = new Array(4);</div><div class="line">      if (right = x &gt;= (xm = (x0 + x1) / 2)) x0 = xm; else x1 = xm;</div><div class="line">      if (bottom = y &gt;= (ym = (y0 + y1) / 2)) y0 = ym; else y1 = ym;</div><div class="line">    &#125; while ((i = bottom &lt;&lt; 1 | right) === (j = (yp &gt;= ym) &lt;&lt; 1 | (xp &gt;= xm)));</div><div class="line">    return parent[j] = node, parent[i] = leaf, tree;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-addAll"><a href="#quadtree-addAll" class="headerlink" title="quadtree.addAll"></a>quadtree.addAll</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">//d3.quadtree的addAll方法，先计算数据的范围调整quadtree，之后再添加数据</div><div class="line">function addAll(data) &#123;</div><div class="line">    var d, i, n = data.length,</div><div class="line">        x,</div><div class="line">        y,</div><div class="line">        xz = new Array(n),</div><div class="line">        yz = new Array(n),</div><div class="line">        x0 = Infinity,</div><div class="line">        y0 = Infinity,</div><div class="line">        x1 = -Infinity,</div><div class="line">        y1 = -Infinity;</div><div class="line"></div><div class="line">    // 根据_x和_y方法计算data值，得到x、y的范围[x0, x1]和[y0, y1]，即矩形区域的范围</div><div class="line">    for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">      // this._x和this._y是quadtree中定义的获取x、y坐标的方法</div><div class="line">      if (isNaN(x = +this._x.call(null, d = data[i])) || isNaN(y = +this._y.call(null, d))) continue;</div><div class="line">      xz[i] = x;</div><div class="line">      yz[i] = y;</div><div class="line">      if (x &lt; x0) x0 = x;</div><div class="line">      if (x &gt; x1) x1 = x;</div><div class="line">      if (y &lt; y0) y0 = y;</div><div class="line">      if (y &gt; y1) y1 = y;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 无效点时的处理</div><div class="line">    if (x1 &lt; x0) x0 = this._x0, x1 = this._x1;</div><div class="line">    if (y1 &lt; y0) y0 = this._y0, y1 = this._y1;</div><div class="line"></div><div class="line">    // 为quadtree添加范围</div><div class="line">    this.cover(x0, y0).cover(x1, y1);</div><div class="line"></div><div class="line">    // 添加node</div><div class="line">    for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">      add(this, xz[i], yz[i], data[i]);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-cover"><a href="#quadtree-cover" class="headerlink" title="quadtree.cover"></a>quadtree.cover</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">//为quadtree设置区域范围</div><div class="line">function tree_cover(x, y) &#123;</div><div class="line">    if (isNaN(x = +x) || isNaN(y = +y)) return this;</div><div class="line"></div><div class="line">    var x0 = this._x0,</div><div class="line">        y0 = this._y0,</div><div class="line">        x1 = this._x1,</div><div class="line">        y1 = this._y1;</div><div class="line"></div><div class="line">    // 如果该quadtree范围不存在，则根据当前的(x, y)坐标取范围</div><div class="line">    if (isNaN(x0)) &#123;</div><div class="line">      x1 = (x0 = Math.floor(x)) + 1;</div><div class="line">      y1 = (y0 = Math.floor(y)) + 1;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 如果(x, y)在当前范围之外，则扩展当前范围</div><div class="line">    else if (x0 &gt; x || x &gt; x1 || y0 &gt; y || y &gt; y1) &#123;</div><div class="line">      var z = x1 - x0,</div><div class="line">          node = this._root,</div><div class="line">          parent,</div><div class="line">          i;</div><div class="line">      //将该矩形区域的中心看做坐标轴原点，根据x、y坐标轴划分成大小相等的四块区域，0表示右下方，1表示左下方，2表示右上方，3表示左上方。</div><div class="line">      //成倍的增长z，扩大当前范围直至(x, y)在当前区域内，在扩大范围的同时不断的构造node数组</div><div class="line">      switch (i = (y &lt; (y0 + y1) / 2) &lt;&lt; 1 | (x &lt; (x0 + x1) / 2)) &#123;</div><div class="line">        case 0: &#123;</div><div class="line">          do parent = new Array(4), parent[i] = node, node = parent;</div><div class="line">          while (z *= 2, x1 = x0 + z, y1 = y0 + z, x &gt; x1 || y &gt; y1);</div><div class="line">          break;</div><div class="line">        &#125;</div><div class="line">        case 1: &#123;</div><div class="line">          do parent = new Array(4), parent[i] = node, node = parent;</div><div class="line">          while (z *= 2, x0 = x1 - z, y1 = y0 + z, x0 &gt; x || y &gt; y1);</div><div class="line">          break;</div><div class="line">        &#125;</div><div class="line">        case 2: &#123;</div><div class="line">          do parent = new Array(4), parent[i] = node, node = parent;</div><div class="line">          while (z *= 2, x1 = x0 + z, y0 = y1 - z, x &gt; x1 || y0 &gt; y);</div><div class="line">          break;</div><div class="line">        &#125;</div><div class="line">        case 3: &#123;</div><div class="line">          do parent = new Array(4), parent[i] = node, node = parent;</div><div class="line">          while (z *= 2, x0 = x1 - z, y0 = y1 - z, x0 &gt; x || y0 &gt; y);</div><div class="line">          break;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      if (this._root &amp;&amp; this._root.length) this._root = node;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 如果(x, y)已经在当前范围内，则直接返回</div><div class="line">    else return this;</div><div class="line"></div><div class="line">    this._x0 = x0;</div><div class="line">    this._y0 = y0;</div><div class="line">    this._x1 = x1;</div><div class="line">    this._y1 = y1;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-extend"><a href="#quadtree-extend" class="headerlink" title="quadtree.extend"></a>quadtree.extend</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">//若有参数且_ = [[x0, y0], [x1, y1]]用于通过cover方法设置quadtree的范围[x0, y0]和[x1, y1]；若没有参数，则以同样的数组形式返回当前区域的范围。</div><div class="line">function tree_extent(_) &#123;</div><div class="line">    return arguments.length</div><div class="line">        ? this.cover(+_[0][0], +_[0][1]).cover(+_[1][0], +_[1][1])</div><div class="line">        : isNaN(this._x0) ? undefined : [[this._x0, this._y0], [this._x1, this._y1]];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-data"><a href="#quadtree-data" class="headerlink" title="quadtree.data"></a>quadtree.data</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">//返回quadtree中所有的node</div><div class="line">function tree_data() &#123;</div><div class="line">    var data = [];</div><div class="line">    this.visit(function(node) &#123;</div><div class="line">      if (!node.length) do data.push(node.data); while (node = node.next)</div><div class="line">    &#125;);</div><div class="line">    return data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-find"><a href="#quadtree-find" class="headerlink" title="quadtree.find"></a>quadtree.find</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div></pre></td><td class="code"><pre><div class="line">//查找以(x, y)为中心，radius为半径的范围内离中心最近的点</div><div class="line">function tree_find(x, y, radius) &#123;</div><div class="line">    var data,</div><div class="line">      //(x0, y0)和(x3, y3)表示以(x, y)为中心的矩形搜索区域</div><div class="line">        x0 = this._x0,</div><div class="line">        y0 = this._y0,</div><div class="line">      //(x1, y1)和(x2, y2)表示当前node所在的区域范围</div><div class="line">        x1,</div><div class="line">        y1,</div><div class="line">        x2,</div><div class="line">        y2,</div><div class="line">        x3 = this._x1,</div><div class="line">        y3 = this._y1,</div><div class="line">        quads = [],</div><div class="line">        node = this._root,</div><div class="line">        q,</div><div class="line">        i;</div><div class="line"></div><div class="line">    if (node) quads.push(new Quad(node, x0, y0, x3, y3));</div><div class="line">    //若没有设置radius则默认为Infinity</div><div class="line">    if (radius == null) radius = Infinity;</div><div class="line">    else &#123;</div><div class="line">      x0 = x - radius, y0 = y - radius;</div><div class="line">      x3 = x + radius, y3 = y + radius;</div><div class="line">      radius *= radius;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    while (q = quads.pop()) &#123;</div><div class="line"></div><div class="line">      // 如果node不存在或者(x, y)在该node范围外则跳过执行</div><div class="line">      if (!(node = q.node)</div><div class="line">          //node所在区域与搜索区域不重叠</div><div class="line">          //</div><div class="line">          //</div><div class="line">          || (x1 = q.x0) &gt; x3</div><div class="line">          || (y1 = q.y0) &gt; y3</div><div class="line">          || (x2 = q.x1) &lt; x0</div><div class="line">          || (y2 = q.y1) &lt; y0) continue;</div><div class="line"></div><div class="line">      // 如果node为数组说明已对其进行了区域划分，开始递归查找</div><div class="line">      if (node.length) &#123;</div><div class="line">        var xm = (x1 + x2) / 2,</div><div class="line">            ym = (y1 + y2) / 2;</div><div class="line">        // node数组中0表示区域左上角，1表示右上角，2表示左下角，3表示右下角</div><div class="line">        quads.push(</div><div class="line">          new Quad(node[3], xm, ym, x2, y2),</div><div class="line">          new Quad(node[2], x1, ym, xm, y2),</div><div class="line">          new Quad(node[1], xm, y1, x2, ym),</div><div class="line">          new Quad(node[0], x1, y1, xm, ym)</div><div class="line">        );</div><div class="line"></div><div class="line">        // 判断(x, y)所在的象限，并将该象限对应的node与栈顶的数据交换位置，如果是左上角区域及表示已是栈顶则不用处理</div><div class="line">        if (i = (y &gt;= ym) &lt;&lt; 1 | (x &gt;= xm)) &#123;</div><div class="line">          q = quads[quads.length - 1];</div><div class="line">          quads[quads.length - 1] = quads[quads.length - 1 - i];</div><div class="line">          quads[quads.length - 1 - i] = q;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      // 当查找到在搜索范围内的点后，缩小搜索范围</div><div class="line">      else &#123;</div><div class="line">        var dx = x - +this._x.call(null, node.data),</div><div class="line">            dy = y - +this._y.call(null, node.data),</div><div class="line">            d2 = dx * dx + dy * dy;</div><div class="line">        if (d2 &lt; radius) &#123;</div><div class="line">          var d = Math.sqrt(radius = d2);</div><div class="line">          x0 = x - d, y0 = y - d;</div><div class="line">          x3 = x + d, y3 = y + d;</div><div class="line">          data = node.data;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return data;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-remove"><a href="#quadtree-remove" class="headerlink" title="quadtree.remove"></a>quadtree.remove</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line">function tree_remove(d) &#123;</div><div class="line">    if (isNaN(x = +this._x.call(null, d)) || isNaN(y = +this._y.call(null, d))) return this; </div><div class="line"></div><div class="line">    var parent,</div><div class="line">        node = this._root,</div><div class="line">        retainer,</div><div class="line">        previous,</div><div class="line">        next,</div><div class="line">        x0 = this._x0,</div><div class="line">        y0 = this._y0,</div><div class="line">        x1 = this._x1,</div><div class="line">        y1 = this._y1,</div><div class="line">        x,</div><div class="line">        y,</div><div class="line">        xm,</div><div class="line">        ym,</div><div class="line">        right,</div><div class="line">        bottom,</div><div class="line">        i,</div><div class="line">        j;</div><div class="line"></div><div class="line">    if (!node) return this;</div><div class="line"></div><div class="line">    // 当node中有多个点时，进入查找</div><div class="line">    if (node.length) while (true) &#123;</div><div class="line">      //计算(x, y)所在的象限</div><div class="line">      if (right = x &gt;= (xm = (x0 + x1) / 2)) x0 = xm; else x1 = xm;</div><div class="line">      if (bottom = y &gt;= (ym = (y0 + y1) / 2)) y0 = ym; else y1 = ym;</div><div class="line">      //如果对应的象限中没有点，则说明查找不到该点，直接返回。</div><div class="line">      if (!(parent = node, node = node[i = bottom &lt;&lt; 1 | right])) return this;</div><div class="line">      //如果该象限只有一个点则跳出循环往下执行。</div><div class="line">      if (!node.length) break;</div><div class="line">      //</div><div class="line">      if (parent[(i + 1) &amp; 3] || parent[(i + 2) &amp; 3] || parent[(i + 3) &amp; 3]) retainer = parent, j = i;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // TODO: 这里存在一个问题，由于node.data和d都为数组，但是两个数据是不同的指针，因此这里不会相等</div><div class="line">    while (node.data !== d) if (!(previous = node, node = node.next)) return this;</div><div class="line">    if (next = node.next) delete node.next;</div><div class="line"></div><div class="line">    // If there are multiple coincident points, remove just the point.</div><div class="line">    if (previous) return (next ? previous.next = next : delete previous.next), this;</div><div class="line"></div><div class="line">    // If this is the root point, remove it.</div><div class="line">    if (!parent) return this._root = next, this;</div><div class="line"></div><div class="line">    // Remove this leaf.</div><div class="line">    next ? parent[i] = next : delete parent[i];</div><div class="line"></div><div class="line">    // If the parent now contains exactly one leaf, collapse superfluous parents.</div><div class="line">    if ((node = parent[0] || parent[1] || parent[2] || parent[3])</div><div class="line">        &amp;&amp; node === (parent[3] || parent[2] || parent[1] || parent[0])</div><div class="line">        &amp;&amp; !node.length) &#123;</div><div class="line">      if (retainer) retainer[j] = node;</div><div class="line">      else this._root = node;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-visit"><a href="#quadtree-visit" class="headerlink" title="quadtree.visit"></a>quadtree.visit</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">//采用先序遍历的方式，如果callback返回true，则执行不再访问其子节点；否则继续访问其子节点</div><div class="line">function tree_visit(callback) &#123;</div><div class="line">    var quads = [], q, node = this._root, child, x0, y0, x1, y1;</div><div class="line">    if (node) quads.push(new Quad(node, this._x0, this._y0, this._x1, this._y1));</div><div class="line">    while (q = quads.pop()) &#123;</div><div class="line">      if (!callback(node = q.node, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1) &amp;&amp; node.length) &#123;</div><div class="line">        var xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;</div><div class="line">        if (child = node[3]) quads.push(new Quad(child, xm, ym, x1, y1));</div><div class="line">        if (child = node[2]) quads.push(new Quad(child, x0, ym, xm, y1));</div><div class="line">        if (child = node[1]) quads.push(new Quad(child, xm, y0, x1, ym));</div><div class="line">        if (child = node[0]) quads.push(new Quad(child, x0, y0, xm, ym));</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-visitAfter"><a href="#quadtree-visitAfter" class="headerlink" title="quadtree.visitAfter"></a>quadtree.visitAfter</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">//采用后序遍历的方式，先将所有节点存入数组中，然后依次对所有节点进行操作。</div><div class="line">function tree_visitAfter(callback) &#123;</div><div class="line">    var quads = [], next = [], q;</div><div class="line">    if (this._root) quads.push(new Quad(this._root, this._x0, this._y0, this._x1, this._y1));</div><div class="line">    while (q = quads.pop()) &#123;</div><div class="line">      var node = q.node;</div><div class="line">      if (node.length) &#123;</div><div class="line">        var child, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1, xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;</div><div class="line">        if (child = node[0]) quads.push(new Quad(child, x0, y0, xm, ym));</div><div class="line">        if (child = node[1]) quads.push(new Quad(child, xm, y0, x1, ym));</div><div class="line">        if (child = node[2]) quads.push(new Quad(child, x0, ym, xm, y1));</div><div class="line">        if (child = node[3]) quads.push(new Quad(child, xm, ym, x1, y1));</div><div class="line">      &#125;</div><div class="line">      next.push(q);</div><div class="line">    &#125;</div><div class="line">    while (q = next.pop()) &#123;</div><div class="line">      callback(q.node, q.x0, q.y0, q.x1, q.y1);</div><div class="line">    &#125;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quadtree-copy"><a href="#quadtree-copy" class="headerlink" title="quadtree.copy"></a>quadtree.copy</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">//对quadtree进行复制，但是是通过引用来复制的而不是复制值。</div><div class="line">treeProto.copy = function() &#123;</div><div class="line">    var copy = new Quadtree(this._x, this._y, this._x0, this._y0, this._x1, this._y1),</div><div class="line">        node = this._root,</div><div class="line">        nodes,</div><div class="line">        child;</div><div class="line"></div><div class="line">    if (!node) return copy;</div><div class="line"></div><div class="line">    if (!node.length) return copy._root = leaf_copy(node), copy;</div><div class="line"></div><div class="line">    nodes = [&#123;source: node, target: copy._root = new Array(4)&#125;];</div><div class="line">    while (node = nodes.pop()) &#123;</div><div class="line">      for (var i = 0; i &lt; 4; ++i) &#123;</div><div class="line">        if (child = node.source[i]) &#123;</div><div class="line">          if (child.length) nodes.push(&#123;source: child, target: node.target[i] = new Array(4)&#125;);</div><div class="line">          else node.target[i] = leaf_copy(child);</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return copy;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">//复制叶子节点</div><div class="line">function leaf_copy(leaf) &#123;</div><div class="line">    var copy = &#123;data: leaf.data&#125;, next = copy;</div><div class="line">    while (leaf = leaf.next) next = next.next = &#123;data: leaf.data&#125;;</div><div class="line">    return copy;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="quad对象"><a href="#quad对象" class="headerlink" title="quad对象"></a>quad对象</h2><p>在quadtree的一些方法中使用到了quad对象用于存储quadtree中的node信息，包括node的值和其所在区域的坐标范围。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">   * Quad构造函数</div><div class="line">   * @param &#123;object&#125; node 节点数据</div><div class="line">   * @param &#123;number&#125; x0   该节点的区域坐标范围</div><div class="line">   * @param &#123;number&#125; y0   该节点的区域坐标范围</div><div class="line">   * @param &#123;number&#125; x1   该节点的区域坐标范围</div><div class="line">   * @param &#123;number&#125; y1   该节点的区域坐标范围</div><div class="line">   *</div><div class="line">   * quad对象在quadtree的node中的位置如下：</div><div class="line">   * </div><div class="line">   *        |</div><div class="line">   *    0   |    1</div><div class="line">   *        |</div><div class="line">   * -------|--------</div><div class="line">   *        |</div><div class="line">   *    2   |    3</div><div class="line">   *        |</div><div class="line">   */</div><div class="line">function Quad(node, x0, y0, x1, y1) &#123;</div><div class="line">    this.node = node;</div><div class="line">    this.x0 = x0;</div><div class="line">    this.y0 = y0;</div><div class="line">    this.x1 = x1;</div><div class="line">    this.y1 = y1;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="web/js/d3js-source-code-quadtrees/" data-title="d3.js源码分析——Quadtrees" data-url="http://arlendp.me/web/js/d3js-source-code-quadtrees/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'arlendp'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large orange">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse green"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer cyan darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="https://github.com/arlendp" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright orange-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('green lighten-2');
+
+            
+            // 添加new标签
+            $('').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=57839780" charset="UTF-8"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,614 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>d3.js源码分析——Shape | arlendp&#39;s blog</title>
+    <meta name="author" content="arlendp">
+    
+    <meta name="description" content="一个分享web前端技术的个人博客">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="d3.js源码分析——Shape"/>
+    <meta property="og:site_name" content="arlendp"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="arlendp" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="cyan">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">arlendp</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav cyan darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://tva2.sinaimg.cn/crop.0.0.720.720.180/ba00f58bjw8ewfzppyd46j20k00k03zn.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">arlendp</p>
+                        <p class="desc">Web前端</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav cyan darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Web开发/">
+                    Web开发 <span class="right">14 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/JS/">
+                    JS <span class="right">12 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/CSS/">
+                    CSS <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/HTML/">
+                    HTML <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Git/">
+                    Git <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper cyan">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/Web开发/">Web开发</a><a class="breadcrumb" href="/categories/Web开发/JS/">JS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>d3.js源码分析——Shape</h1>
+    
+
+
+            </div>
+            <time class="orange-link-context" datetime="2016-09-01T16:00:00.000Z"><a href="/web/js/d3js-source-code-shape/">2016-09-02</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Web开发/" class="chip orange">Web开发</a>
+        
+            <a href="/tags/D3-js/" class="chip orange">D3.js</a>
+        
+    </div>
+
+
+            <div class="toc orange-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Pies"><span class="section table-of-contents-text">Pies</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Lines"><span class="section table-of-contents-text">Lines</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-line"><span class="section table-of-contents-text">d3.line</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-radialLine"><span class="section table-of-contents-text">d3.radialLine</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Areas"><span class="section table-of-contents-text">Areas</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-area"><span class="section table-of-contents-text">d3.area</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-radialArea"><span class="section table-of-contents-text">d3.radialArea</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Curve"><span class="section table-of-contents-text">Curve</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-curveBasis"><span class="section table-of-contents-text">d3.curveBasis</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-curveBasisClosed"><span class="section table-of-contents-text">d3.curveBasisClosed</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-curveBasisOpen"><span class="section table-of-contents-text">d3.curveBasisOpen</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-curveBundle"><span class="section table-of-contents-text">d3.curveBundle</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Custom-Curves"><span class="section table-of-contents-text">Custom Curves</span></a></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Symbols"><span class="section table-of-contents-text">Symbols</span></a></li></ol>
+</div>
+
+
+            <div class="entry orange-link-context">
+                <p>shape模块提供各种形状的生成器，这些形状的产生是数据驱动的，通过控制输入数据来形成一种视觉的表现。<br><a id="more"></a></p>
+<h2 id="Pies"><a href="#Pies" class="headerlink" title="Pies"></a>Pies</h2><p>饼图生成器不直接产生图形，而是计算出需要的角度信息，然后传入<code>d3.arc</code>中进行绘制。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">  // 绘制饼图</div><div class="line">function pie() &#123;</div><div class="line">    var value = identity$1,</div><div class="line">        sortValues = descending$1,</div><div class="line">        sort = null,</div><div class="line">        startAngle = constant$1(0),</div><div class="line">        endAngle = constant$1(tau$2),</div><div class="line">        padAngle = constant$1(0);</div><div class="line"></div><div class="line">    function pie(data) &#123;</div><div class="line">      var i,</div><div class="line">          n = data.length,</div><div class="line">          j,</div><div class="line">          k,</div><div class="line">          //统计data数组中的数据和</div><div class="line">          sum = 0,</div><div class="line">          index = new Array(n),</div><div class="line">          arcs = new Array(n),</div><div class="line">          a0 = +startAngle.apply(this, arguments),</div><div class="line">          //将|endAngle - startAngle|限定在 2 * PI之间</div><div class="line">          da = Math.min(tau$2, Math.max(-tau$2, endAngle.apply(this, arguments) - a0)),</div><div class="line">          a1,</div><div class="line">          //限定padAngle的范围</div><div class="line">          p = Math.min(Math.abs(da) / n, padAngle.apply(this, arguments)),</div><div class="line">          // da&lt;0表示弧线为逆时针方向，pa的值也应进行相应处理</div><div class="line">          pa = p * (da &lt; 0 ? -1 : 1),</div><div class="line">          v;</div><div class="line"></div><div class="line">      for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">        if ((v = arcs[index[i] = i] = +value(data[i], i, data)) &gt; 0) &#123;</div><div class="line">          sum += v;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      // 按照处理后的arcs数据大小对index进行排序，或者直接对data进行排序</div><div class="line">      if (sortValues != null) index.sort(function(i, j) &#123; return sortValues(arcs[i], arcs[j]); &#125;);</div><div class="line">      else if (sort != null) index.sort(function(i, j) &#123; return sort(data[i], data[j]); &#125;);</div><div class="line"></div><div class="line">      // 计算arcs，按照排序后的index来逐个计算</div><div class="line">      for (i = 0, k = sum ? (da - n * pa) / sum : 0; i &lt; n; ++i, a0 = a1) &#123;</div><div class="line">        j = index[i], v = arcs[j], a1 = a0 + (v &gt; 0 ? v * k : 0) + pa, arcs[j] = &#123;</div><div class="line">          data: data[j],</div><div class="line">          index: i,</div><div class="line">          value: v,</div><div class="line">          startAngle: a0,</div><div class="line">          endAngle: a1,</div><div class="line">          padAngle: p</div><div class="line">        &#125;;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      return arcs;</div><div class="line">    &#125;</div><div class="line">    //设置value函数或数值，value函数会被依次传入data[i]、i和data。</div><div class="line">    pie.value = function(_) &#123;</div><div class="line">      return arguments.length ? (value = typeof _ === &quot;function&quot; ? _ : constant$1(+_), pie) : value;</div><div class="line">    &#125;;</div><div class="line">    //设置数值的排序方式</div><div class="line">    pie.sortValues = function(_) &#123;</div><div class="line">      return arguments.length ? (sortValues = _, sort = null, pie) : sortValues;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    pie.sort = function(_) &#123;</div><div class="line">      return arguments.length ? (sort = _, sortValues = null, pie) : sort;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    pie.startAngle = function(_) &#123;</div><div class="line">      return arguments.length ? (startAngle = typeof _ === &quot;function&quot; ? _ : constant$1(+_), pie) : startAngle;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    pie.endAngle = function(_) &#123;</div><div class="line">      return arguments.length ? (endAngle = typeof _ === &quot;function&quot; ? _ : constant$1(+_), pie) : endAngle;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    pie.padAngle = function(_) &#123;</div><div class="line">      return arguments.length ? (padAngle = typeof _ === &quot;function&quot; ? _ : constant$1(+_), pie) : padAngle;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return pie;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="Lines"><a href="#Lines" class="headerlink" title="Lines"></a>Lines</h2><p>可以产生样条曲线或者多段线。</p>
+<h3 id="d3-line"><a href="#d3-line" class="headerlink" title="d3.line"></a>d3.line</h3><p>默认的设置是构造多条直线段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">//d3.line()，绘制多条直线段，中间可能断开</div><div class="line">  function line() &#123;</div><div class="line">    var x$$ = x,</div><div class="line">        y$$ = y,</div><div class="line">        defined = constant$1(true),</div><div class="line">        context = null,</div><div class="line">        curve = curveLinear,</div><div class="line">        output = null;</div><div class="line"></div><div class="line">    function line(data) &#123;</div><div class="line">      var i,</div><div class="line">          n = data.length,</div><div class="line">          d,</div><div class="line">          defined0 = false,</div><div class="line">          buffer;</div><div class="line"></div><div class="line">      if (context == null) output = curve(buffer = path());</div><div class="line"></div><div class="line">      for (i = 0; i &lt;= n; ++i) &#123;</div><div class="line">        if (!(i &lt; n &amp;&amp; defined(d = data[i], i, data)) === defined0) &#123;</div><div class="line">          if (defined0 = !defined0) output.lineStart();</div><div class="line">          else output.lineEnd();</div><div class="line">        &#125;</div><div class="line">        if (defined0) output.point(+x$$(d, i, data), +y$$(d, i, data));</div><div class="line">      &#125;</div><div class="line">    // 返回path的计算结果</div><div class="line">      if (buffer) return output = null, buffer + &quot;&quot; || null;</div><div class="line">    &#125;</div><div class="line">    // 设置获取x的函数</div><div class="line">    line.x = function(_) &#123;</div><div class="line">      return arguments.length ? (x$$ = typeof _ === &quot;function&quot; ? _ : constant$1(+_), line) : x$$;</div><div class="line">    &#125;;</div><div class="line">    // 设置获取y的函数</div><div class="line">    line.y = function(_) &#123;</div><div class="line">      return arguments.length ? (y$$ = typeof _ === &quot;function&quot; ? _ : constant$1(+_), line) : y$$;</div><div class="line">    &#125;;</div><div class="line">    // defined函数用于判断当前点是否已被定义，若为true，则会计算x、y坐标和绘制直线；否则会跳过当前点，结束当前直线的绘制。</div><div class="line">    line.defined = function(_) &#123;</div><div class="line">      return arguments.length ? (defined = typeof _ === &quot;function&quot; ? _ : constant$1(!!_), line) : defined;</div><div class="line">    &#125;;</div><div class="line">    // 设置curve函数</div><div class="line">    line.curve = function(_) &#123;</div><div class="line">      return arguments.length ? (curve = _, context != null &amp;&amp; (output = curve(context)), line) : curve;</div><div class="line">    &#125;;</div><div class="line">    // 设置context</div><div class="line">    line.context = function(_) &#123;</div><div class="line">      return arguments.length ? (_ == null ? context = output = null : output = curve(context = _), line) : context;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return line;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-radialLine"><a href="#d3-radialLine" class="headerlink" title="d3.radialLine"></a>d3.radialLine</h3><p>构造放射线，与上述<code>d3.line</code>类似，只是将x、y函数替换成角度和半径函数，并且改放射线总是相对于(0, 0)进行绘制。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">// d3.radialLine，在d3.line的基础上进行修改，主要的差别是curve函数和坐标系。</div><div class="line">function radialLine$1() &#123;</div><div class="line">    return radialLine(line().curve(curveRadialLinear));</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 构造放射线，分别构造线性和放射状曲线</div><div class="line">var curveRadialLinear = curveRadial(curveLinear);</div><div class="line"></div><div class="line">//线性的curve函数</div><div class="line">function curveLinear(context) &#123;</div><div class="line">    return new Linear(context);</div><div class="line">&#125;</div><div class="line"></div><div class="line">//将当前curve函数包装成放射状curve</div><div class="line">function curveRadial(curve) &#123;</div><div class="line">    function radial(context) &#123;</div><div class="line">      return new Radial(curve(context));</div><div class="line">    &#125;</div><div class="line">    radial._curve = curve;</div><div class="line">    return radial;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 将line中的(x, y)坐标替换成(angle, radius)</div><div class="line">function radialLine(l) &#123;</div><div class="line">    var c = l.curve;</div><div class="line"></div><div class="line">    l.angle = l.x, delete l.x;</div><div class="line">    l.radius = l.y, delete l.y;</div><div class="line"></div><div class="line">    l.curve = function(_) &#123;</div><div class="line">      return arguments.length ? c(curveRadial(_)) : c()._curve;</div><div class="line">    &#125;;</div><div class="line">    return l;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="Areas"><a href="#Areas" class="headerlink" title="Areas"></a>Areas</h2><p>用于产生一块区域。</p>
+<h3 id="d3-area"><a href="#d3-area" class="headerlink" title="d3.area"></a>d3.area</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div></pre></td><td class="code"><pre><div class="line">/* d3.area</div><div class="line"> * 首先根据x1, y1函数进行绘制，完成后根据x0, y0函数来反方向绘制，整个图形的绘制过程是顺时针方向。</div><div class="line"> * 默认绘制的是x0 = x1，y0 = 0的一块区域。</div><div class="line"> */</div><div class="line"> function area$1() &#123;</div><div class="line">    var x0 = x,</div><div class="line">        x1 = null,</div><div class="line">        y0 = constant$1(0),</div><div class="line">        y1 = y,</div><div class="line">        defined = constant$1(true),</div><div class="line">        context = null,</div><div class="line">        curve = curveLinear,</div><div class="line">        output = null;</div><div class="line"></div><div class="line">    function area(data) &#123;</div><div class="line">      var i,</div><div class="line">          j,</div><div class="line">          k,</div><div class="line">          n = data.length,</div><div class="line">          d,</div><div class="line">          defined0 = false,</div><div class="line">          buffer,</div><div class="line">          x0z = new Array(n),</div><div class="line">          y0z = new Array(n);</div><div class="line"></div><div class="line">      if (context == null) output = curve(buffer = path());</div><div class="line"></div><div class="line">      for (i = 0; i &lt;= n; ++i) &#123;</div><div class="line">        if (!(i &lt; n &amp;&amp; defined(d = data[i], i, data)) === defined0) &#123;</div><div class="line">          //defined0由false变为true时，表示绘制开始，相反表示绘制结束</div><div class="line">          if (defined0 = !defined0) &#123;</div><div class="line">            j = i;</div><div class="line">            output.areaStart();</div><div class="line">            output.lineStart();</div><div class="line">          &#125; else &#123;</div><div class="line">            output.lineEnd();</div><div class="line">            output.lineStart();</div><div class="line">            //反向绘制x0z, y0z，绘制方向为顺时针方向</div><div class="line">            for (k = i - 1; k &gt;= j; --k) &#123;</div><div class="line">              output.point(x0z[k], y0z[k]);</div><div class="line">            &#125;</div><div class="line">            output.lineEnd();</div><div class="line">            // 关闭绘制区域</div><div class="line">            output.areaEnd();</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">        //defined0为true时可以绘制</div><div class="line">        if (defined0) &#123;</div><div class="line">          x0z[i] = +x0(d, i, data), y0z[i] = +y0(d, i, data);</div><div class="line">          //优先使用x1和y1函数进行计算</div><div class="line">          output.point(x1 ? +x1(d, i, data) : x0z[i], y1 ? +y1(d, i, data) : y0z[i]);</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      if (buffer) return output = null, buffer + &quot;&quot; || null;</div><div class="line">    &#125;</div><div class="line">    // 返回与当前area有相同defined、curve和context的line构造器</div><div class="line">    function arealine() &#123;</div><div class="line">      return line().defined(defined).curve(curve).context(context);</div><div class="line">    &#125;</div><div class="line">    // 设置x函数，将该函数赋值给x0，null赋值给x1</div><div class="line">    area.x = function(_) &#123;</div><div class="line">      return arguments.length ? (x0 = typeof _ === &quot;function&quot; ? _ : constant$1(+_), x1 = null, area) : x0;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.x0 = function(_) &#123;</div><div class="line">      return arguments.length ? (x0 = typeof _ === &quot;function&quot; ? _ : constant$1(+_), area) : x0;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.x1 = function(_) &#123;</div><div class="line">      return arguments.length ? (x1 = _ == null ? null : typeof _ === &quot;function&quot; ? _ : constant$1(+_), area) : x1;</div><div class="line">    &#125;;</div><div class="line">    // 设置y函数，将该函数赋值给y0，null赋值给y1</div><div class="line">    area.y = function(_) &#123;</div><div class="line">      return arguments.length ? (y0 = typeof _ === &quot;function&quot; ? _ : constant$1(+_), y1 = null, area) : y0;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.y0 = function(_) &#123;</div><div class="line">      return arguments.length ? (y0 = typeof _ === &quot;function&quot; ? _ : constant$1(+_), area) : y0;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.y1 = function(_) &#123;</div><div class="line">      return arguments.length ? (y1 = _ == null ? null : typeof _ === &quot;function&quot; ? _ : constant$1(+_), area) : y1;</div><div class="line">    &#125;;</div><div class="line">    // 分别对line构造器设置x和y函数</div><div class="line">    area.lineX0 =</div><div class="line">    area.lineY0 = function() &#123;</div><div class="line">      return arealine().x(x0).y(y0);</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.lineY1 = function() &#123;</div><div class="line">      return arealine().x(x0).y(y1);</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.lineX1 = function() &#123;</div><div class="line">      return arealine().x(x1).y(y0);</div><div class="line">    &#125;;</div><div class="line">    // defined函数用来判断是否绘制当前点。这样可以生成离散的图形。</div><div class="line">    area.defined = function(_) &#123;</div><div class="line">      return arguments.length ? (defined = typeof _ === &quot;function&quot; ? _ : constant$1(!!_), area) : defined;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.curve = function(_) &#123;</div><div class="line">      return arguments.length ? (curve = _, context != null &amp;&amp; (output = curve(context)), area) : curve;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    area.context = function(_) &#123;</div><div class="line">      return arguments.length ? (_ == null ? context = output = null : output = curve(context = _), area) : context;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return area;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h3 id="d3-radialArea"><a href="#d3-radialArea" class="headerlink" title="d3.radialArea"></a>d3.radialArea</h3><p>绘制放射状区域。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"> * d3.radialArea</div><div class="line"> * 在area的基础上修改curve函数，将x,y坐标转换为angle,radius坐标，其余绘制方式不变</div><div class="line"> */</div><div class="line">function radialArea() &#123;</div><div class="line">    var a = area$1().curve(curveRadialLinear),</div><div class="line">        c = a.curve,</div><div class="line">        x0 = a.lineX0,</div><div class="line">        x1 = a.lineX1,</div><div class="line">        y0 = a.lineY0,</div><div class="line">        y1 = a.lineY1;</div><div class="line">    // 将d3.area中的(x0, y0)和(x1, y1)转化成(startAngle, innerRadius)和(endAngle, outerRadius)</div><div class="line">    a.angle = a.x, delete a.x;</div><div class="line">    a.startAngle = a.x0, delete a.x0;</div><div class="line">    a.endAngle = a.x1, delete a.x1;</div><div class="line">    a.radius = a.y, delete a.y;</div><div class="line">    a.innerRadius = a.y0, delete a.y0;</div><div class="line">    a.outerRadius = a.y1, delete a.y1;</div><div class="line">    a.lineStartAngle = function() &#123; return radialLine(x0()); &#125;, delete a.lineX0;</div><div class="line">    a.lineEndAngle = function() &#123; return radialLine(x1()); &#125;, delete a.lineX1;</div><div class="line">    a.lineInnerRadius = function() &#123; return radialLine(y0()); &#125;, delete a.lineY0;</div><div class="line">    a.lineOuterRadius = function() &#123; return radialLine(y1()); &#125;, delete a.lineY1;</div><div class="line">    // 对自定义的curve函数进行包装，防止计算时方法不能使用</div><div class="line">    a.curve = function(_) &#123;</div><div class="line">      return arguments.length ? c(curveRadial(_)) : c()._curve;</div><div class="line">    &#125;;</div><div class="line">    return a;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="Curve"><a href="#Curve" class="headerlink" title="Curve"></a>Curve</h2><p>curve的功能就是将离散的点进行连接，形成一个连续的图形，它并不是直接使用，而是传入上述如<code>d3.line</code>、<code>d3.area</code>等函数的<code>curve</code>函数中来控制这些离散的点的连接方式。</p>
+<h3 id="d3-curveBasis"><a href="#d3-curveBasis" class="headerlink" title="d3.curveBasis"></a>d3.curveBasis</h3><p>通过特定控制点的贝塞尔曲线将离散的点进行连接。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">function point(that, x, y) &#123;</div><div class="line">    that._context.bezierCurveTo(</div><div class="line">      (2 * that._x0 + that._x1) / 3,</div><div class="line">      (2 * that._y0 + that._y1) / 3,</div><div class="line">      (that._x0 + 2 * that._x1) / 3,</div><div class="line">      (that._y0 + 2 * that._y1) / 3,</div><div class="line">      (that._x0 + 4 * that._x1 + x) / 6,</div><div class="line">      (that._y0 + 4 * that._y1 + y) / 6</div><div class="line">    );</div><div class="line">&#125;</div><div class="line">function Basis(context) &#123;</div><div class="line">    this._context = context;</div><div class="line">&#125;</div><div class="line"></div><div class="line">Basis.prototype = &#123;</div><div class="line">    areaStart: function() &#123;</div><div class="line">      this._line = 0;</div><div class="line">    &#125;,</div><div class="line">    areaEnd: function() &#123;</div><div class="line">      this._line = NaN;</div><div class="line">    &#125;,</div><div class="line">    lineStart: function() &#123;</div><div class="line">      this._x0 = this._x1 =</div><div class="line">      this._y0 = this._y1 = NaN;</div><div class="line">      this._point = 0;</div><div class="line">    &#125;,</div><div class="line">    lineEnd: function() &#123;</div><div class="line">      switch (this._point) &#123;</div><div class="line">        case 3: point(this, this._x1, this._y1); // proceed</div><div class="line">        case 2: this._context.lineTo(this._x1, this._y1); break;</div><div class="line">      &#125;</div><div class="line">      if (this._line || (this._line !== 0 &amp;&amp; this._point === 1)) this._context.closePath();</div><div class="line">      this._line = 1 - this._line;</div><div class="line">    &#125;,</div><div class="line">    //首先移动至起点即第一个点，记录下第一个点和第二个点坐标，连接当前点(第一个点)和((5 * x0 + x1) / 6, (5 * y0 + y1) / 6)，并绘制改点到((x0 + 4 * x1 + x) / 6, (y0 + 4 * y1 + y) / 6)点的三次贝塞尔曲线</div><div class="line">    point: function(x, y) &#123;</div><div class="line">      x = +x, y = +y;</div><div class="line">      switch (this._point) &#123;</div><div class="line">        case 0: this._point = 1; this._line ? this._context.lineTo(x, y) : this._context.moveTo(x, y); break;</div><div class="line">        case 1: this._point = 2; break;</div><div class="line">        case 2: this._point = 3; this._context.lineTo((5 * this._x0 + this._x1) / 6, (5 * this._y0 + this._y1) / 6); // proceed</div><div class="line">        default: point(this, x, y); break;</div><div class="line">      &#125;</div><div class="line">      this._x0 = this._x1, this._x1 = x;</div><div class="line">      this._y0 = this._y1, this._y1 = y;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">// d3.curveBasis</div><div class="line">function basis(context) &#123;</div><div class="line">    return new Basis(context);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-curveBasisClosed"><a href="#d3-curveBasisClosed" class="headerlink" title="d3.curveBasisClosed"></a>d3.curveBasisClosed</h3><p>通过特定控制点的贝塞尔曲线连接离散的点，并形成一个闭合图形。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">function BasisClosed(context) &#123;</div><div class="line">    this._context = context;</div><div class="line">&#125;</div><div class="line"></div><div class="line">BasisClosed.prototype = &#123;</div><div class="line">    areaStart: noop,</div><div class="line">    areaEnd: noop,</div><div class="line">    //(x1, y1)和(x2, y2)用于记录第一个和第二个点的坐标</div><div class="line">    lineStart: function() &#123;</div><div class="line">      this._x0 = this._x1 = this._x2 = this._x3 = this._x4 =</div><div class="line">      this._y0 = this._y1 = this._y2 = this._y3 = this._y4 = NaN;</div><div class="line">      this._point = 0;</div><div class="line">    &#125;,</div><div class="line">    lineEnd: function() &#123;</div><div class="line">      switch (this._point) &#123;</div><div class="line">        //如果只有一个点，则移动到第一个点即该点处并关闭图形</div><div class="line">        case 1: &#123;</div><div class="line">          this._context.moveTo(this._x2, this._y2);</div><div class="line">          this._context.closePath();</div><div class="line">          break;</div><div class="line">        &#125;</div><div class="line">        //如果有两个点，则按如下方式处理</div><div class="line">        case 2: &#123;</div><div class="line">          this._context.moveTo((this._x2 + 2 * this._x3) / 3, (this._y2 + 2 * this._y3) / 3);</div><div class="line">          this._context.lineTo((this._x3 + 2 * this._x2) / 3, (this._y3 + 2 * this._y2) / 3);</div><div class="line">          this._context.closePath();</div><div class="line">          break;</div><div class="line">        &#125;</div><div class="line">        //从最后一个点向前绘制，x2,x3,x4分别记录的是前三个点坐标</div><div class="line">        case 3: &#123;</div><div class="line">          this.point(this._x2, this._y2);</div><div class="line">          this.point(this._x3, this._y3);</div><div class="line">          this.point(this._x4, this._y4);</div><div class="line">          break;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;,</div><div class="line">    point: function(x, y) &#123;</div><div class="line">      x = +x, y = +y;</div><div class="line">      switch (this._point) &#123;</div><div class="line">        //记录最初的三个点的坐标</div><div class="line">        case 0: this._point = 1; this._x2 = x, this._y2 = y; break;</div><div class="line">        case 1: this._point = 2; this._x3 = x, this._y3 = y; break;</div><div class="line">        //到最后会绘制一个闭合图形，与初始点连接</div><div class="line">        case 2: this._point = 3; this._x4 = x, this._y4 = y; this._context.moveTo((this._x0 + 4 * this._x1 + x) / 6, (this._y0 + 4 * this._y1 + y) / 6); break;</div><div class="line">        default: point(this, x, y); break;</div><div class="line">      &#125;</div><div class="line">      this._x0 = this._x1, this._x1 = x;</div><div class="line">      this._y0 = this._y1, this._y1 = y;</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">//d3.curveBasisClosed</div><div class="line">function basisClosed(context) &#123;</div><div class="line">    return new BasisClosed(context);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-curveBasisOpen"><a href="#d3-curveBasisOpen" class="headerlink" title="d3.curveBasisOpen"></a>d3.curveBasisOpen</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">function BasisOpen(context) &#123;</div><div class="line">    this._context = context;</div><div class="line">&#125;</div><div class="line"></div><div class="line">BasisOpen.prototype = &#123;</div><div class="line">    areaStart: function() &#123;</div><div class="line">      this._line = 0;</div><div class="line">    &#125;,</div><div class="line">    areaEnd: function() &#123;</div><div class="line">      this._line = NaN;</div><div class="line">    &#125;,</div><div class="line">    lineStart: function() &#123;</div><div class="line">      this._x0 = this._x1 =</div><div class="line">      this._y0 = this._y1 = NaN;</div><div class="line">      this._point = 0;</div><div class="line">    &#125;,</div><div class="line">    lineEnd: function() &#123;</div><div class="line">      if (this._line || (this._line !== 0 &amp;&amp; this._point === 3)) this._context.closePath();</div><div class="line">      this._line = 1 - this._line;</div><div class="line">    &#125;,</div><div class="line">    //记录第一个和第二个点的坐标，从第三个点处开始操作，移动至((x0 + 4 * x1 + x) / 6, (y0 + y1 * 4 + y) / 6) 点处</div><div class="line">    point: function(x, y) &#123;</div><div class="line">      x = +x, y = +y;</div><div class="line">      switch (this._point) &#123;</div><div class="line">        case 0: this._point = 1; break;</div><div class="line">        case 1: this._point = 2; break;</div><div class="line">        case 2: this._point = 3; var x0 = (this._x0 + 4 * this._x1 + x) / 6, y0 = (this._y0 + 4 * this._y1 + y) / 6; this._line ? this._context.lineTo(x0, y0) : this._context.moveTo(x0, y0); break;</div><div class="line">        case 3: this._point = 4; // proceed</div><div class="line">        default: point(this, x, y); break;</div><div class="line">      &#125;</div><div class="line">      this._x0 = this._x1, this._x1 = x;</div><div class="line">      this._y0 = this._y1, this._y1 = y;</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">//d3.curveBasisOpen</div><div class="line">function basisOpen(context) &#123;</div><div class="line">    return new BasisOpen(context);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="d3-curveBundle"><a href="#d3-curveBundle" class="headerlink" title="d3.curveBundle"></a>d3.curveBundle</h3><p>根据制定的控制点连接离散的点，用于分层级的关系图中，与<code>d3.line</code>一起使用，而不能与<code>d3.area</code>使用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">Bundle.prototype = &#123;</div><div class="line">    lineStart: function() &#123;</div><div class="line">      this._x = [];</div><div class="line">      this._y = [];</div><div class="line">      this._basis.lineStart();</div><div class="line">    &#125;,</div><div class="line">    //结束时开始处理数据并绘制图形</div><div class="line">    lineEnd: function() &#123;</div><div class="line">      var x = this._x,</div><div class="line">          y = this._y,</div><div class="line">          j = x.length - 1;</div><div class="line"></div><div class="line">      if (j &gt; 0) &#123;</div><div class="line">        var x0 = x[0],</div><div class="line">            y0 = y[0],</div><div class="line">            //计算起始点到结束点之间x和y的差值</div><div class="line">            dx = x[j] - x0,</div><div class="line">            dy = y[j] - y0,</div><div class="line">            i = -1,</div><div class="line">            t;</div><div class="line"></div><div class="line">        while (++i &lt;= j) &#123;</div><div class="line">          t = i / j;</div><div class="line">          //根据比例确定绘制点的位置，绘制范围在(x0, y0)和(x[j], y[j])之间</div><div class="line">          //当x接近0时，结果近似为一条从起始点到结束点的直线；当x接近1时，结果接近d3.curveBasis</div><div class="line">          this._basis.point(</div><div class="line">            this._beta * x[i] + (1 - this._beta) * (x0 + t * dx),</div><div class="line">            this._beta * y[i] + (1 - this._beta) * (y0 + t * dy)</div><div class="line">          );</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      this._x = this._y = null;</div><div class="line">      this._basis.lineEnd();</div><div class="line">    &#125;,</div><div class="line">    //该方法不会绘制图形，只是将数据存入数组在结束绘制时开始处理数据</div><div class="line">    point: function(x, y) &#123;</div><div class="line">      this._x.push(+x);</div><div class="line">      this._y.push(+y);</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">  //d3.curveBundle</div><div class="line">  var bundle = (function custom(beta) &#123;</div><div class="line"></div><div class="line">    function bundle(context) &#123;</div><div class="line">      return beta === 1 ? new Basis(context) : new Bundle(context, beta);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    bundle.beta = function(beta) &#123;</div><div class="line">      return custom(+beta);</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return bundle;</div><div class="line">&#125;)(0.85);</div></pre></td></tr></table></figure></p>
+<h2 id="Custom-Curves"><a href="#Custom-Curves" class="headerlink" title="Custom Curves"></a>Custom Curves</h2><p>自定义curve函数，需要自定义几个指定的方法。</p>
+<ul>
+<li>curve.areaStart()<br>  表示一个新的区域的开始，每个区域包含两条线段，topline是数据的顺序绘制，baseline则反向绘制。</li>
+<li>curve.areaEnd()<br>  表示当前区域的结束。</li>
+<li>curve.lineStart()<br>  表示一条新的线段的开始，接下来会绘制多个点。</li>
+<li>curve.lineEnd()<br>  表示当前线段的结束。</li>
+<li>curve.point(x, y)<br>  在当前线段上根据给定的(x, y)坐标绘制一个新的点。</li>
+</ul>
+<h2 id="Symbols"><a href="#Symbols" class="headerlink" title="Symbols"></a>Symbols</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">//d3.symbol，默认绘制面积为64的圆形</div><div class="line">function symbol() &#123;</div><div class="line">    var type = constant$1(circle),</div><div class="line">        size = constant$1(64),</div><div class="line">        context = null;</div><div class="line"></div><div class="line">    function symbol() &#123;</div><div class="line">      var buffer;</div><div class="line">      if (!context) context = buffer = path();</div><div class="line">      type.apply(this, arguments).draw(context, +size.apply(this, arguments));</div><div class="line">      if (buffer) return context = null, buffer + &quot;&quot; || null;</div><div class="line">    &#125;</div><div class="line">    //设置图形类型</div><div class="line">    symbol.type = function(_) &#123;</div><div class="line">      return arguments.length ? (type = typeof _ === &quot;function&quot; ? _ : constant$1(_), symbol) : type;</div><div class="line">    &#125;;</div><div class="line">    //设置图形的面积</div><div class="line">    symbol.size = function(_) &#123;</div><div class="line">      return arguments.length ? (size = typeof _ === &quot;function&quot; ? _ : constant$1(+_), symbol) : size;</div><div class="line">    &#125;;</div><div class="line">    //设置绘制上下文</div><div class="line">    symbol.context = function(_) &#123;</div><div class="line">      return arguments.length ? (context = _ == null ? null : _, symbol) : context;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return symbol;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以内置的<code>circle</code>类型为例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">var circle = &#123;</div><div class="line">    //size是该圆形的面积</div><div class="line">    draw: function(context, size) &#123;</div><div class="line">      var r = Math.sqrt(size / pi$2);</div><div class="line">      context.moveTo(r, 0);</div><div class="line">      context.arc(0, 0, r, 0, tau$2);</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>若自定义type，则应该实现<code>draw</code>方法。</p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="web/js/d3js-source-code-shape/" data-title="d3.js源码分析——Shape" data-url="http://arlendp.me/web/js/d3js-source-code-shape/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'arlendp'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large orange">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse green"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer cyan darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="https://github.com/arlendp" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright orange-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('green lighten-2');
+
+            
+            // 添加new标签
+            $('').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=57839780" charset="UTF-8"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

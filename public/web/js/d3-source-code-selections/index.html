@@ -1,0 +1,666 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>d3.js源码分析——Selections | arlendp&#39;s blog</title>
+    <meta name="author" content="arlendp">
+    
+    <meta name="description" content="一个分享web前端技术的个人博客">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="d3.js源码分析——Selections"/>
+    <meta property="og:site_name" content="arlendp"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="arlendp" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="cyan">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">arlendp</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav cyan darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://tva2.sinaimg.cn/crop.0.0.720.720.180/ba00f58bjw8ewfzppyd46j20k00k03zn.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">arlendp</p>
+                        <p class="desc">Web前端</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav cyan darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Web开发/">
+                    Web开发 <span class="right">14 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/JS/">
+                    JS <span class="right">12 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/CSS/">
+                    CSS <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/HTML/">
+                    HTML <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Git/">
+                    Git <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper cyan">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/Web开发/">Web开发</a><a class="breadcrumb" href="/categories/Web开发/JS/">JS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>d3.js源码分析——Selections</h1>
+    
+
+
+            </div>
+            <time class="orange-link-context" datetime="2016-08-29T16:00:00.000Z"><a href="/web/js/d3-source-code-selections/">2016-08-30</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Web开发/" class="chip orange">Web开发</a>
+        
+            <a href="/tags/D3-js/" class="chip orange">D3.js</a>
+        
+    </div>
+
+
+            <div class="toc orange-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#选择元素"><span class="section table-of-contents-text">选择元素</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-select-selector"><span class="section table-of-contents-text">selection.select(selector)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-selectAll-selector"><span class="section table-of-contents-text">selection.selectAll(selector)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-filter-filter"><span class="section table-of-contents-text">selection.filter(filter)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-merge-other-selection"><span class="section table-of-contents-text">selection.merge(other_selection)</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#修改元素"><span class="section table-of-contents-text">修改元素</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-attr-name-value"><span class="section table-of-contents-text">selection.attr(name[, value])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-classed-names-value"><span class="section table-of-contents-text">selection.classed(names[, value])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-style-name-value-priority"><span class="section table-of-contents-text">selection.style(name[, value[, priority]])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-property-name-value"><span class="section table-of-contents-text">selection.property(name[, value])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-text-value"><span class="section table-of-contents-text">selection.text([value])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-html-value"><span class="section table-of-contents-text">selection.html([value])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-append-type"><span class="section table-of-contents-text">selection.append(type)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-insert-type-before"><span class="section table-of-contents-text">selection.insert(type, before)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-sort-compare"><span class="section table-of-contents-text">selection.sort(compare)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-sort-compare-1"><span class="section table-of-contents-text">selection.sort(compare)</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#连接数据"><span class="section table-of-contents-text">连接数据</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-data-data-key"><span class="section table-of-contents-text">selection.data([data[, key]])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-enter"><span class="section table-of-contents-text">selection.enter()</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-exit"><span class="section table-of-contents-text">selection.exit()</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-datum-value"><span class="section table-of-contents-text">selection.datum([value])</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#处理事件"><span class="section table-of-contents-text">处理事件</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-on-typenames-listener-capture"><span class="section table-of-contents-text">selection.on(typenames[, listener[, capture]])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-dispatch-type-parameters"><span class="section table-of-contents-text">selection.dispatch(type[, parameters])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-event"><span class="section table-of-contents-text">d3.event</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-customEvent-event-listener-that-arguments"><span class="section table-of-contents-text">d3.customEvent(event, listener[, that[, arguments]])</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-mouse-container"><span class="section table-of-contents-text">d3.mouse(container)</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#控制流"><span class="section table-of-contents-text">控制流</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-each-function"><span class="section table-of-contents-text">selection.each(function)</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#selection-call-function-arguments…"><span class="section table-of-contents-text">selection.call(function[, arguments…])</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#局部变量"><span class="section table-of-contents-text">局部变量</span></a></li></ol>
+</div>
+
+
+            <div class="entry orange-link-context">
+                <p>在web开发中我们会花大量的时间用于dom的操作上，一般情况下我们会选择第三方库如jQuery来替代原生的方法，因为原生的方法在操作上会使代码大量重复冗余而不易操作。d3同样提供了一套自己的方法来很方便的对dom进行操作，像修改样式、注册时间等等都可以通过它来完成。<br><a id="more"></a></p>
+<p>d3的selection主要用于直接对DOM进行操作，如设置属性、修改样式等等，同时它可以和data join（数据连接）这一强大的功能结合起来对元素和元素上绑定的数据进行操作。<br>selection中的方法计算后返回当前selection，这样可以进行方法的链式调用。由于通过这种方式调用方法会使得每行的代码很长，因此按照约定：若该方法返回的是<strong>当前的selection</strong>，则使用<strong>四个空格</strong>进行缩进；若方法返回的是<strong>新的selection</strong>，则使用<strong>两个空格</strong>进行缩进。</p>
+<h2 id="选择元素"><a href="#选择元素" class="headerlink" title="选择元素"></a>选择元素</h2><p>元素的选择通过两种方法<code>select</code>和<code>selectAll</code>来实现，前者只返回第一个匹配的元素，而后者返回所有匹配元素。<br>由于之后所有的操作都是在selection上进行，而该对象则是通过Selection构造函数得到的，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">function Selection(groups, parents) &#123;</div><div class="line">    this._groups = groups;</div><div class="line">    this._parents = parents;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看出，selection对象包含两个基本属性<code>_groups</code>和<code>_parents</code>，前者用于存储结点组，而后者则存储结点的父节点信息。</p>
+<h3 id="selection-select-selector"><a href="#selection-select-selector" class="headerlink" title="selection.select(selector)"></a>selection.select(selector)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var p = d3.selectAll(&apos;div&apos;)</div><div class="line">          .select(&apos;p&apos;);</div></pre></td></tr></table></figure>
+<p>该方法对selection中的每个元素进行查找，选择其中第一个匹配selector的子元素，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"> * Selection的select方法</div><div class="line"> * 通过select方法选择时，若不存在元素，则会在数组中将该位置留出（赋值为null）用于之后插入时使用。</div><div class="line"> */</div><div class="line"></div><div class="line">function selection_select(select) &#123;</div><div class="line">    if (typeof select !== &quot;function&quot;) select = selector(select);</div><div class="line">    //当select是函数时，直接调用该函数，并依次对该函数传入data信息、当前的索引和当前的结点group，同时将函数的this设置为当前dom对象</div><div class="line">    for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j &lt; m; ++j) &#123;</div><div class="line">        for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i &lt; n; ++i) &#123;</div><div class="line">            if ((node = group[i]) &amp;&amp; (subnode = select.call(node, node.__data__, i, group))) &#123;</div><div class="line">          //当node中有data信息时，node的子元素也添加该data信息</div><div class="line">            if (&quot;__data__&quot; in node) subnode.__data__ = node.__data__;</div><div class="line">                subgroup[i] = subnode;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    //将父级的_parents属性作为子元素的_parents属性</div><div class="line">    return new Selection(subgroups, this._parents);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>若selector为选择器字符串时，则会先调用selector方法将其转化为函数，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">function selector(selector) &#123;</div><div class="line">    return selector == null ? none$2 : function() &#123;</div><div class="line">        //只返回第一个选中元素</div><div class="line">        return this.querySelector(selector);</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看出，其内部调用的是js的原生方法<code>querySelector</code>。<br>上述代码对select参数进行处理后，使得其转化为函数，在后来的循环中调用时，通过<code>select.call</code>进行调用，传入的参数依次为<strong>结点的<strong>data</strong>属性值，结点在该结点组中的索引，该结点组</strong>。<br>有以下几点值得注意：</p>
+<ul>
+<li>若结点中包含<code>__data__</code>属性则会对匹配的子元素也设置该属性。</li>
+<li>通过select方法得到的新的selection的<code>_parents</code>值并不会改变。</li>
+</ul>
+<h3 id="selection-selectAll-selector"><a href="#selection-selectAll-selector" class="headerlink" title="selection.selectAll(selector)"></a>selection.selectAll(selector)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var p = d3.selectAll(&apos;div&apos;)</div><div class="line">          .selectAll(&apos;p&apos;);</div></pre></td></tr></table></figure>
+<p>该方法对selection中的每个元素进行查找，选择其中匹配selector的子元素，返回的selection中的元素根据其父结点进行对应的分组，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"> * 对selection进行selectAll计算会改变selection结构，parents也会改变</div><div class="line"> */</div><div class="line">function selection_selectAll(select) &#123;</div><div class="line">    if (typeof select !== &quot;function&quot;) select = selectorAll(select);</div><div class="line">    for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j &lt; m; ++j) &#123;</div><div class="line">        for (var group = groups[j], n = group.length, node, i = 0; i &lt; n; ++i) &#123;</div><div class="line">            if (node = group[i]) &#123;</div><div class="line">                subgroups.push(select.call(node, node.__data__, i, group));</div><div class="line">                parents.push(node);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return new Selection(subgroups, parents);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码可以看出，对node调用select方法后，查找到的结果存入subgroups中，同时将node作为父结点存入parents数组中，使得结点与父结点一一对应，最终返回新的selection。</p>
+<h3 id="selection-filter-filter"><a href="#selection-filter-filter" class="headerlink" title="selection.filter(filter)"></a>selection.filter(filter)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var red = d3.selectAll(&apos;p&apos;)</div><div class="line">            .filter(&apos;.red&apos;)</div></pre></td></tr></table></figure>
+<p>将使得filter为true的元素构造成新的selection并返回，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">//filter方法对当前selection进行过滤，保留满足条件的元素</div><div class="line">function selection_filter(match) &#123;</div><div class="line">    if (typeof match !== &quot;function&quot;) match = matcher$1(match);</div><div class="line">    for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j &lt; m; ++j) &#123;</div><div class="line">            for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node, i = 0; i &lt; n; ++i) &#123;</div><div class="line">                if ((node = group[i]) &amp;&amp; match.call(node, node.__data__, i, group)) &#123;</div><div class="line">                subgroup.push(node);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return new Selection(subgroups, this._parents);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>若<code>match</code>不为函数，则通过<code>matcher$1</code>函数对其进行处理，其源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var matcher = function(selector) &#123;</div><div class="line">    return function() &#123;</div><div class="line">        //Element.matches(s)，如果元素能通过s选择器选择到则返回true；否则返回false</div><div class="line">        return this.matches(selector);</div><div class="line">    &#125;;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>可看出<code>matcher</code>函数内部是调用原生的<code>Element.matches</code>方法实现。</p>
+<h3 id="selection-merge-other-selection"><a href="#selection-merge-other-selection" class="headerlink" title="selection.merge(other_selection)"></a>selection.merge(other_selection)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">var circle = svg.selectAll(&quot;circle&quot;).data(data) // UPDATE</div><div class="line">    .style(&quot;fill&quot;, &quot;blue&quot;);</div><div class="line"></div><div class="line">circle.exit().remove(); // EXIT</div><div class="line"></div><div class="line">circle.enter().append(&quot;circle&quot;) // ENTER</div><div class="line">    .style(&quot;fill&quot;, &quot;green&quot;)</div><div class="line">  .merge(circle) // ENTER + UPDATE</div><div class="line">    .style(&quot;stroke&quot;, &quot;black&quot;);</div></pre></td></tr></table></figure>
+<p>该方法将两个selection进行合并成一个新的selection并返回，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">function selection_merge(selection) &#123;</div><div class="line">    //新的selection的_.groups长度和groups0相同，合并时只在m范围内计算</div><div class="line">    for (var groups0 = this._groups, groups1 = selection._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j &lt; m; ++j) &#123;</div><div class="line">        for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i &lt; n; ++i) &#123;</div><div class="line">            //groups0数组大小不变，只有在group0[i]不存在，group1[i]存在时才选择group1[i]</div><div class="line">            if (node = group0[i] || group1[i]) &#123;</div><div class="line">                merge[i] = node;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    // 若m1 &lt; m0，则将groups0剩余的复制过来</div><div class="line">    for (; j &lt; m0; ++j) &#123;</div><div class="line">      merges[j] = groups0[j];</div><div class="line">    &#125;</div><div class="line">    return new Selection(merges, this._parents);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>该方法实际上相当于对this selection中的空元素进行填充。</p>
+<h2 id="修改元素"><a href="#修改元素" class="headerlink" title="修改元素"></a>修改元素</h2><p>在选择元素之后可以使用selection的方法来修改元素，如样式、属性等。</p>
+<h3 id="selection-attr-name-value"><a href="#selection-attr-name-value" class="headerlink" title="selection.attr(name[, value])"></a>selection.attr(name[, value])</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var p = d3.selectAll(&apos;p&apos;)</div><div class="line">            .attr(&apos;class&apos;, &apos;red&apos;);</div></pre></td></tr></table></figure>
+<p>对selection中的元素以指定的name和value设置属性，并返回当前selection，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">function selection_attr(name, value) &#123;</div><div class="line">    var fullname = namespace(name);</div><div class="line"></div><div class="line">    if (arguments.length &lt; 2) &#123;</div><div class="line">        //得到selection中第一个存在的元素</div><div class="line">        var node = this.node();</div><div class="line">        return fullname.local</div><div class="line">            ? node.getAttributeNS(fullname.space, fullname.local)</div><div class="line">            : node.getAttribute(fullname);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return this.each((value == null</div><div class="line">        ? (fullname.local ? attrRemoveNS : attrRemove) : (typeof value === &quot;function&quot;</div><div class="line">        ? (fullname.local ? attrFunctionNS : attrFunction)</div><div class="line">        : (fullname.local ? attrConstantNS : attrConstant)))(fullname, value));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>若只有name参数时，则返回第一个存在的元素的name属性值，调用的是原生的<code>Element.getAttribute</code>方法。<br>当有两个参数时，调用<code>selection.each</code>方法对selection中的每个元素进行操作，其源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">function selection_each(callback) &#123;</div><div class="line">    for (var groups = this._groups, j = 0, m = groups.length; j &lt; m; ++j) &#123;</div><div class="line">        for (var group = groups[j], i = 0, n = group.length, node; i &lt; n; ++i) &#123;</div><div class="line">            if (node = group[i]) callback.call(node, node.__data__, i, group);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>若value值为函数，则将name和value传入attrFunction函数中进行处理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">function attrFunction(name, value) &#123;</div><div class="line">    return function() &#123;</div><div class="line">        var v = value.apply(this, arguments);</div><div class="line">        if (v == null) this.removeAttribute(name);</div><div class="line">        else this.setAttribute(name, v);</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在<code>selection.each</code>方法中，将参数传入value函数中，根据value返回结果选择设置和删除属性操作。</p>
+<h3 id="selection-classed-names-value"><a href="#selection-classed-names-value" class="headerlink" title="selection.classed(names[, value])"></a>selection.classed(names[, value])</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var p = d3.selectAll(&apos;p&apos;)</div><div class="line">            .classed(&apos;red warn&apos;, true);</div></pre></td></tr></table></figure>
+<p>对selection中的元素设置类名，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 当value为真值时，在所有元素类名中添加name；否则删除name</div><div class="line">function selection_classed(name, value) &#123;</div><div class="line">    var names = classArray(name + &quot;&quot;);</div><div class="line">    // 当只有name参数时，判断该selection对象的_groups里第一个存在的结点是否包含所有的name的类名，如果是则返回true；否则，返回false</div><div class="line">    if (arguments.length &lt; 2) &#123;</div><div class="line">        var list = classList(this.node()), i = -1, n = names.length;</div><div class="line">        while (++i &lt; n) if (!list.contains(names[i])) return false;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">    return this.each((typeof value === &quot;function&quot;</div><div class="line">        ? classedFunction : value</div><div class="line">        ? classedTrue</div><div class="line">        : classedFalse)(names, value));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中<code>classArray</code>方法是将类名字符串拆分成数组：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 将类名拆分成数组，如&apos;button button-warn&apos; =&gt; [&apos;button&apos;, &apos;button-warn&apos;]</div><div class="line">function classArray(string) &#123;</div><div class="line">    return string.trim().split(/^|\s+/);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="selection-style-name-value-priority"><a href="#selection-style-name-value-priority" class="headerlink" title="selection.style(name[, value[, priority]])"></a>selection.style(name[, value[, priority]])</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var p = d3.selectAll(&apos;p&apos;)</div><div class="line">            .style(&apos;color&apos;, &apos;red&apos;);</div></pre></td></tr></table></figure>
+<p>该方法对selection中的元素设置样式，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// 设置selection的样式，注意样式的单位问题</div><div class="line">function selection_style(name, value, priority) &#123;</div><div class="line">    var node;</div><div class="line">    return arguments.length &gt; 1</div><div class="line">        ? this.each((value == null</div><div class="line">              ? styleRemove : typeof value === &quot;function&quot;</div><div class="line">              ? styleFunction</div><div class="line">              : styleConstant)(name, value, priority == null ? &quot;&quot; : priority))</div><div class="line">        : window(node = this.node())</div><div class="line">            .getComputedStyle(node, null)</div><div class="line">            .getPropertyValue(name);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上述代码可以看出，获取样式是通过<code>window.getComputedStyle(element).getPropertyValue(name)</code>来得到（该方法得到的值是只读的），而删除样式则是通过<code>element.style.removeProperty(name)</code>来实现，设置属性通过<code>element.style.setProperty(name, value)</code>来实现。</p>
+<h3 id="selection-property-name-value"><a href="#selection-property-name-value" class="headerlink" title="selection.property(name[, value])"></a>selection.property(name[, value])</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var checkbox = d3.selectAll(&apos;input[type=checkbox]&apos;)</div><div class="line">                    .property(&apos;checked&apos;, &apos;checked&apos;);</div></pre></td></tr></table></figure>
+<p>该方法设置一些特殊的属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">function selection_property(name, value) &#123;</div><div class="line">    return arguments.length &gt; 1</div><div class="line">        ? this.each((value == null</div><div class="line">            ? propertyRemove : typeof value === &quot;function&quot;</div><div class="line">            ? propertyFunction</div><div class="line">            : propertyConstant)(name, value))</div><div class="line">        : this.node()[name];</div><div class="line">&#125;</div><div class="line"></div><div class="line">function propertyRemove(name) &#123;</div><div class="line">    return function() &#123;</div><div class="line">      delete this[name];</div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">function propertyConstant(name, value) &#123;</div><div class="line">    return function() &#123;</div><div class="line">      this[name] = value;</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function propertyFunction(name, value) &#123;</div><div class="line">    return function() &#123;</div><div class="line">      var v = value.apply(this, arguments);</div><div class="line">      if (v == null) delete this[name];</div><div class="line">      else this[name] = v;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>内部通过直接修改元素的属性来实现。</p>
+<h3 id="selection-text-value"><a href="#selection-text-value" class="headerlink" title="selection.text([value])"></a>selection.text([value])</h3><p>该方法对selection中的所有元素设置文本内容，同时会替换掉元素中的子元素，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">function textRemove() &#123;</div><div class="line">    this.textContent = &quot;&quot;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function textConstant(value) &#123;</div><div class="line">    return function() &#123;</div><div class="line">      this.textContent = value;</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function textFunction(value) &#123;</div><div class="line">    return function() &#123;</div><div class="line">      var v = value.apply(this, arguments);</div><div class="line">      this.textContent = v == null ? &quot;&quot; : v;</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line">// 设置元素的textContent属性，该属性返回的是元素内的纯文本内容，不包含结点标签（但包含标签内的文本）</div><div class="line">function selection_text(value) &#123;</div><div class="line">    return arguments.length</div><div class="line">        ? this.each(value == null</div><div class="line">            ? textRemove : (typeof value === &quot;function&quot;</div><div class="line">            ? textFunction</div><div class="line">            : textConstant)(value))</div><div class="line">        : this.node().textContent;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码是通过<code>element.textContent</code>方法来获取和修改文本内容。</p>
+<h3 id="selection-html-value"><a href="#selection-html-value" class="headerlink" title="selection.html([value])"></a>selection.html([value])</h3><p>对selection中的所有元素设置innerHTML。方法同上述<code>selection.text</code>类似，只是通过<code>element.innerHTML</code>来修改元素内的所有内容。</p>
+<h3 id="selection-append-type"><a href="#selection-append-type" class="headerlink" title="selection.append(type)"></a>selection.append(type)</h3><p>对selection中的元素添加新的元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line"> * selection的append方法</div><div class="line"> * 该方法返回新的Selection对象，</div><div class="line"> */</div><div class="line">function selection_append(name) &#123;</div><div class="line">    var create = typeof name === &quot;function&quot; ? name : creator(name);</div><div class="line">    return this.select(function() &#123;</div><div class="line">        //arguments是传入当前匿名函数的参数</div><div class="line">        return this.appendChild(create.apply(this, arguments));</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">function creatorInherit(name) &#123;</div><div class="line">    return function() &#123;</div><div class="line">        //ownerDocument返回当前document对象</div><div class="line">        var document = this.ownerDocument,</div><div class="line">            uri = this.namespaceURI;</div><div class="line">        return uri === xhtml &amp;&amp; document.documentElement.namespaceURI === xhtml</div><div class="line">            ? document.createElement(name)//创建dom对象</div><div class="line">            : document.createElementNS(uri, name);</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>该方法中调用到了<code>selection.select</code>方法，由于<code>element.appendChild</code>方法返回的是该子结点，因此返回的新的selection包含的是所有添加的子结点。</p>
+<h3 id="selection-insert-type-before"><a href="#selection-insert-type-before" class="headerlink" title="selection.insert(type, before)"></a>selection.insert(type, before)</h3><p>对selection中的元素插入新的元素，同上述<code>selection.append</code>方法类似，只是内部使用<code>element.insertBefore</code>方法实现。</p>
+<h3 id="selection-sort-compare"><a href="#selection-sort-compare" class="headerlink" title="selection.sort(compare)"></a>selection.sort(compare)</h3><p>根据<code>compare</code>函数对selection中的元素进行排序，排好序后按照排序结果对dom进行排序，返回排序后新创建的selection对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">function selection_sort(compare) &#123;</div><div class="line">    if (!compare) compare = ascending$2;</div><div class="line"></div><div class="line">    function compareNode(a, b) &#123;</div><div class="line">      // 比较结点的data大小</div><div class="line">      return a &amp;&amp; b ? compare(a.__data__, b.__data__) : !a - !b;</div><div class="line">    &#125;</div><div class="line">    // copy一份selection中的_groups包含的结点</div><div class="line">    for (var groups = this._groups, m = groups.length, sortgroups = new Array(m), j = 0; j &lt; m; ++j) &#123;</div><div class="line">        for (var group = groups[j], n = group.length, sortgroup = sortgroups[j] = new Array(n), node, i = 0; i &lt; n; ++i) &#123;</div><div class="line">            if (node = group[i]) &#123;</div><div class="line">                sortgroup[i] = node;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        // 调用array的sort方法</div><div class="line">        sortgroup.sort(compareNode);</div><div class="line">    &#125;</div><div class="line">    return new Selection(sortgroups, this._parents).order();</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 递增</div><div class="line">function ascending$2(a, b) &#123;</div><div class="line">    return a &lt; b ? -1 : a &gt; b ? 1 : a &gt;= b ? 0 : NaN;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>若没有compare参数，则默认以递增的方式排序。同时排序是首先比较元素中的<code>__data__</code>属性值的大小，对selection排好序后调用order方法。</p>
+<h3 id="selection-sort-compare-1"><a href="#selection-sort-compare-1" class="headerlink" title="selection.sort(compare)"></a>selection.sort(compare)</h3><p>按照selection中每组内元素的顺序对dom进行排序<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// 对dom结点进行排序</div><div class="line">function selection_order() &#123;</div><div class="line">    for (var groups = this._groups, j = -1, m = groups.length; ++j &lt; m;) &#123;</div><div class="line">        for (var group = groups[j], i = group.length - 1, next = group[i], node; --i &gt;= 0;) &#123;</div><div class="line">            if (node = group[i]) &#123;</div><div class="line">                // 将node移至next的前面，并将node赋值给next</div><div class="line">                if (next &amp;&amp; next !== node.nextSibling) next.parentNode.insertBefore(node, next);</div><div class="line">                next = node;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="连接数据"><a href="#连接数据" class="headerlink" title="连接数据"></a>连接数据</h2><p>连接数据是将数据绑定到selection对象上，实际上是将数据存储到<code>__data__</code>属性中，这样之后对selection的操作过程中便可以直接使用绑定好的数据。主要要理解<code>update</code>、<code>enter</code>和<code>exit</code>，可参考文章<a href="https://bost.ocks.org/mike/join/" target="_blank" rel="external">Thinking With Joins</a>。</p>
+<h3 id="selection-data-data-key"><a href="#selection-data-data-key" class="headerlink" title="selection.data([data[, key]])"></a>selection.data([data[, key]])</h3><p>该方法将指定的data数组绑定到选中的元素上，返回的selection包含成功绑定数据的元素，也叫做<code>updata selection</code>，源码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">function selection_data(value, key) &#123;</div><div class="line">    //当value为假值时，将selection所有元素的__data__属性以数组形式返回</div><div class="line">    if (!value) &#123;</div><div class="line">      data = new Array(this.size()), j = -1;</div><div class="line">      this.each(function(d) &#123; data[++j] = d; &#125;);</div><div class="line">      return data;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    var bind = key ? bindKey : bindIndex,</div><div class="line">        parents = this._parents,</div><div class="line">        groups = this._groups;</div><div class="line"></div><div class="line">    if (typeof value !== &quot;function&quot;) value = constant$4(value);</div><div class="line"></div><div class="line">    for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j &lt; m; ++j) &#123;</div><div class="line">      var parent = parents[j],</div><div class="line">          group = groups[j],</div><div class="line">          groupLength = group.length,</div><div class="line">          data = value.call(parent, parent &amp;&amp; parent.__data__, j, parents),</div><div class="line">          dataLength = data.length,</div><div class="line">          enterGroup = enter[j] = new Array(dataLength),</div><div class="line">          updateGroup = update[j] = new Array(dataLength),</div><div class="line">          exitGroup = exit[j] = new Array(groupLength);</div><div class="line"></div><div class="line">      bind(parent, group, enterGroup, updateGroup, exitGroup, data, key);</div><div class="line"></div><div class="line">      // 对enter结点设置_next属性，存储其索引之后的第一个update结点</div><div class="line">      for (var i0 = 0, i1 = 0, previous, next; i0 &lt; dataLength; ++i0) &#123;</div><div class="line">        if (previous = enterGroup[i0]) &#123;</div><div class="line">          if (i0 &gt;= i1) i1 = i0 + 1;</div><div class="line">          while (!(next = updateGroup[i1]) &amp;&amp; ++i1 &lt; dataLength);</div><div class="line">          previous._next = next || null;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    // 将enter和exit存入update selection的属性中</div><div class="line">    update = new Selection(update, parents);</div><div class="line">    update._enter = enter;</div><div class="line">    update._exit = exit;</div><div class="line">    return update;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过上述代码可以看到，对每组group绑定的是相同的data数据。<br>当没有key参数时，绑定数据使用的是<code>bindIndex</code>方法，按照索引一次绑定。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">function bindIndex(parent, group, enter, update, exit, data) &#123;</div><div class="line">    var i = 0,</div><div class="line">        node,</div><div class="line">        groupLength = group.length,</div><div class="line">        dataLength = data.length;</div><div class="line"></div><div class="line">    /*</div><div class="line">     * 将data数据绑定到node，并将该node存入update数组中</div><div class="line">     * 将剩余的data数据存入enter数组中</div><div class="line">     */</div><div class="line">    for (; i &lt; dataLength; ++i) &#123;</div><div class="line">      if (node = group[i]) &#123;</div><div class="line">        node.__data__ = data[i];</div><div class="line">        update[i] = node;</div><div class="line">      &#125; else &#123;</div><div class="line">        enter[i] = new EnterNode(parent, data[i]);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 将剩余的node存入exit数组中</div><div class="line">    for (; i &lt; groupLength; ++i) &#123;</div><div class="line">      if (node = group[i]) &#123;</div><div class="line">        exit[i] = node;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>若含有key参数，则调用<code>bindKey</code>方法来绑定数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">function bindKey(parent, group, enter, update, exit, data, key) &#123;</div><div class="line">    var i,</div><div class="line">        node,</div><div class="line">        nodeByKeyValue = &#123;&#125;,</div><div class="line">        groupLength = group.length,</div><div class="line">        dataLength = data.length,</div><div class="line">        keyValues = new Array(groupLength),</div><div class="line">        keyValue;</div><div class="line"></div><div class="line">    // 对group中每个结点计算keyValue，如果之后的结点含有与前面结点相同的keyValue则将该结点存入exit数组中</div><div class="line">    for (i = 0; i &lt; groupLength; ++i) &#123;</div><div class="line">      if (node = group[i]) &#123;</div><div class="line">        keyValues[i] = keyValue = keyPrefix + key.call(node, node.__data__, i, group);</div><div class="line">        if (keyValue in nodeByKeyValue) &#123;</div><div class="line">          exit[i] = node;</div><div class="line">        &#125; else &#123;</div><div class="line">          nodeByKeyValue[keyValue] = node;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 对每一个data计算keyValue，如果该keyValue已存在nodeByKeyValue数组中，则将其对应的node存入update数组且绑定data数据；否则将data存入enter中</div><div class="line">    for (i = 0; i &lt; dataLength; ++i) &#123;</div><div class="line">      keyValue = keyPrefix + key.call(parent, data[i], i, data);</div><div class="line">      if (node = nodeByKeyValue[keyValue]) &#123;</div><div class="line">        update[i] = node;</div><div class="line">        node.__data__ = data[i];</div><div class="line">        nodeByKeyValue[keyValue] = null;</div><div class="line">      &#125; else &#123;</div><div class="line">        enter[i] = new EnterNode(parent, data[i]);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 将剩余的没有绑定数据的结点存入exit数组</div><div class="line">    for (i = 0; i &lt; groupLength; ++i) &#123;</div><div class="line">      if ((node = group[i]) &amp;&amp; (nodeByKeyValue[keyValues[i]] === node)) &#123;</div><div class="line">        exit[i] = node;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="selection-enter"><a href="#selection-enter" class="headerlink" title="selection.enter()"></a>selection.enter()</h3><p>返回selections中的enter selection，即<code>selection._enter</code>的结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">function sparse(update) &#123;</div><div class="line">    return new Array(update.length);</div><div class="line">  &#125;</div><div class="line">// selection的enter方法</div><div class="line">function selection_enter() &#123;</div><div class="line">    return new Selection(this._enter || this._groups.map(sparse), this._parents);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>若selection没有<code>_enter</code>属性，即没有进行过<code>data</code>操作，则创建空的数组。</p>
+<h3 id="selection-exit"><a href="#selection-exit" class="headerlink" title="selection.exit()"></a>selection.exit()</h3><p>返回selection中的exit selection，即<code>selection._exit</code>的结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">function selection_exit() &#123;</div><div class="line">    return new Selection(this._exit || this._groups.map(sparse), this._parents);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="selection-datum-value"><a href="#selection-datum-value" class="headerlink" title="selection.datum([value])"></a>selection.datum([value])</h3><p>对selection中的每个元素设置绑定数据，该方法并不会影响到<code>enter</code>和<code>exit</code>的值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">function selection_datum(value) &#123;</div><div class="line">    return arguments.length</div><div class="line">        ? this.property(&quot;__data__&quot;, value)</div><div class="line">        : this.node().__data__;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可见其调用<code>selection.property</code>方法来设置<code>__data__</code>属性。<br>经常会使用该方法来进行HTML5 data属性的访问，如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">selection.datum(function() &#123;return this.dataset&#125;);</div></pre></td></tr></table></figure></p>
+<p><code>element.dataset</code>是原生方法，返回的是元素绑定的所有data属性。</p>
+<h2 id="处理事件"><a href="#处理事件" class="headerlink" title="处理事件"></a>处理事件</h2><h3 id="selection-on-typenames-listener-capture"><a href="#selection-on-typenames-listener-capture" class="headerlink" title="selection.on(typenames[, listener[, capture]])"></a>selection.on(typenames[, listener[, capture]])</h3><p>该方法用于对selection中的元素添加或者移除事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">function selection_on(typename, value, capture) &#123;</div><div class="line">    var typenames = parseTypenames$1(typename + &quot;&quot;), i, n = typenames.length, t;</div><div class="line">    // 如果只有typename参数，根据type和name值来找到selection中第一个存在的元素的__on属性中对应的value值。</div><div class="line">    if (arguments.length &lt; 2) &#123;</div><div class="line">      var on = this.node().__on;</div><div class="line">      if (on) for (var j = 0, m = on.length, o; j &lt; m; ++j) &#123;</div><div class="line">        for (i = 0, o = on[j]; i &lt; n; ++i) &#123;</div><div class="line">          if ((t = typenames[i]).type === o.type &amp;&amp; t.name === o.name) &#123;</div><div class="line">            return o.value;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      return;</div><div class="line">    &#125;</div><div class="line">    // 如果value为真值，则添加事件；否则移除事件。</div><div class="line">    on = value ? onAdd : onRemove;</div><div class="line">    if (capture == null) capture = false;</div><div class="line">    for (i = 0; i &lt; n; ++i) this.each(on(typenames[i], value, capture));</div><div class="line">    return this;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>首先是对typename参数进行处理，使用的是<code>parseTypenames</code>函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 对typenames根据空格来划分成数组，并根据分离后的字符串中的&apos;.&apos;来将该字符串分割为type和name部分，如：&apos;click.foo click.bar&apos; =&gt; [&#123;type: &apos;click&apos;, name: &apos;foo&apos;&#125;, &#123;type: &apos;click&apos;, name: &apos;bar&apos;&#125;]</div><div class="line">function parseTypenames$1(typenames) &#123;</div><div class="line">    return typenames.trim().split(/^|\s+/).map(function(t) &#123;</div><div class="line">      var name = &quot;&quot;, i = t.indexOf(&quot;.&quot;);</div><div class="line">      if (i &gt;= 0) name = t.slice(i + 1), t = t.slice(0, i);</div><div class="line">      return &#123;type: t, name: name&#125;;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>根据value是否为真值来选择添加或者移除事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// 添加事件函数</div><div class="line">function onAdd(typename, value, capture) &#123;</div><div class="line">    var wrap = filterEvents.hasOwnProperty(typename.type) ? filterContextListener : contextListener;</div><div class="line">    return function(d, i, group) &#123;</div><div class="line">        var on = this.__on, o, listener = wrap(value, i, group);</div><div class="line">        if (on) for (var j = 0, m = on.length; j &lt; m; ++j) &#123;</div><div class="line">            // 如果新事件的type和name和之前已绑定的事件相同，则移除之前的事件并绑定新的事件</div><div class="line">            if ((o = on[j]).type === typename.type &amp;&amp; o.name === typename.name) &#123;</div><div class="line">                this.removeEventListener(o.type, o.listener, o.capture);</div><div class="line">                this.addEventListener(o.type, o.listener = listener, o.capture = capture);</div><div class="line">                o.value = value;</div><div class="line">                return;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        // 添加事件，并将事件信息存入selection.__on属性中</div><div class="line">        this.addEventListener(typename.type, listener, capture);</div><div class="line">        o = &#123;type: typename.type, name: typename.name, value: value, listener: listener, capture: capture&#125;;</div><div class="line">        if (!on) this.__on = [o];</div><div class="line">        else on.push(o);</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">// 移除事件函数</div><div class="line">function onRemove(typename) &#123;</div><div class="line">    return function() &#123;</div><div class="line">        var on = this.__on;</div><div class="line">        if (!on) return;</div><div class="line">        for (var j = 0, i = -1, m = on.length, o; j &lt; m; ++j) &#123;</div><div class="line">            if (o = on[j], (!typename.type || o.type === typename.type) &amp;&amp; o.name === typename.name) &#123;</div><div class="line">            //对结点移除事件</div><div class="line">            this.removeEventListener(o.type, o.listener, o.capture);</div><div class="line">            &#125; else &#123;</div><div class="line">                //修改结点的__on属性值</div><div class="line">                on[++i] = o;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        if (++i) on.length = i;</div><div class="line">        //on为空则删除__on属性</div><div class="line">        else delete this.__on;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="selection-dispatch-type-parameters"><a href="#selection-dispatch-type-parameters" class="headerlink" title="selection.dispatch(type[, parameters])"></a>selection.dispatch(type[, parameters])</h3><p>对selection中的元素分派指定类型的自定义事件，其中parameters可能包含以下内容：</p>
+<ul>
+<li>bubbles：设置为true表示事件可以冒泡</li>
+<li>cancelable：设置为true表示事件可以被取消</li>
+<li>detail：绑定到事件上的自定义数据<br>源码如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">//分派事件</div><div class="line">function selection_dispatch(type, params) &#123;</div><div class="line">    return this.each((typeof params === &quot;function&quot;</div><div class="line">        ? dispatchFunction</div><div class="line">        : dispatchConstant)(type, params));</div><div class="line">&#125;</div><div class="line"></div><div class="line">function dispatchConstant(type, params) &#123;</div><div class="line">    return function() &#123;</div><div class="line">      return dispatchEvent(this, type, params);</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"></div><div class="line">function dispatchFunction(type, params) &#123;</div><div class="line">    return function() &#123;</div><div class="line">      return dispatchEvent(this, type, params.apply(this, arguments));</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><code>dispatchEvent</code>函数如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">//创建自定义事件并分派给指定元素</div><div class="line">function dispatchEvent(node, type, params) &#123;</div><div class="line">    var window$$ = window(node),</div><div class="line">        event = window$$.CustomEvent;</div><div class="line"></div><div class="line">    if (event) &#123;</div><div class="line">      event = new event(type, params);</div><div class="line">    &#125; else &#123;</div><div class="line">        //该方法已被废弃</div><div class="line">        event = window$$.document.createEvent(&quot;Event&quot;);</div><div class="line">        if (params) event.initEvent(type, params.bubbles, params.cancelable), event.detail = params.detail;</div><div class="line">        else event.initEvent(type, false, false);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    node.dispatchEvent(event);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-event"><a href="#d3-event" class="headerlink" title="d3.event"></a>d3.event</h3><p>存储当前事件，在调用事件监听器的时候设置，处理函数执行完毕后重置，可以获取其中包含的事件信息如：<code>event.pageX</code>。</p>
+<h3 id="d3-customEvent-event-listener-that-arguments"><a href="#d3-customEvent-event-listener-that-arguments" class="headerlink" title="d3.customEvent(event, listener[, that[, arguments]])"></a>d3.customEvent(event, listener[, that[, arguments]])</h3><p>该方法调用指定的监听器。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//调用指定的监听器</div><div class="line">function customEvent(event1, listener, that, args) &#123;</div><div class="line">    //记录当前事件</div><div class="line">    var event0 = exports.event;</div><div class="line">    event1.sourceEvent = exports.event;</div><div class="line">    exports.event = event1;</div><div class="line">    try &#123;</div><div class="line">        return listener.apply(that, args);</div><div class="line">    &#125; finally &#123;</div><div class="line">        //监听器执行完后恢复事件</div><div class="line">        exports.event = event0;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-mouse-container"><a href="#d3-mouse-container" class="headerlink" title="d3.mouse(container)"></a>d3.mouse(container)</h3><p>返回当前当前事件相对于指定容器的x和y坐标。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">function mouse(node) &#123;</div><div class="line">    var event = sourceEvent();</div><div class="line">    //如果是触摸事件，返回Touch对象</div><div class="line">    if (event.changedTouches) event = event.changedTouches[0];</div><div class="line">    return point$5(node, event);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>point$5</code>方法用于计算坐标。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">function point$5(node, event) &#123;</div><div class="line">    //若node是svg元素，则获取svg容器</div><div class="line">    var svg = node.ownerSVGElement || node;</div><div class="line"></div><div class="line">    if (svg.createSVGPoint) &#123;</div><div class="line">      //创建SVGPoint对象</div><div class="line">      var point = svg.createSVGPoint();</div><div class="line">      //将事件相对客户端的x和y坐标赋值给point对象</div><div class="line">      point.x = event.clientX, point.y = event.clientY;</div><div class="line">      //进行坐标转换</div><div class="line">      point = point.matrixTransform(node.getScreenCTM().inverse());</div><div class="line">      return [point.x, point.y];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    var rect = node.getBoundingClientRect();</div><div class="line">    //返回event事件相对于容器的坐标</div><div class="line">    return [event.clientX - rect.left - node.clientLeft, event.clientY - rect.top - node.clientTop];</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h2><p>用于selection的一些高级操作。</p>
+<h3 id="selection-each-function"><a href="#selection-each-function" class="headerlink" title="selection.each(function)"></a>selection.each(function)</h3><p>为每一个选中的元素调用指定的函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//selection的each方法</div><div class="line">function selection_each(callback) &#123;</div><div class="line"></div><div class="line">    for (var groups = this._groups, j = 0, m = groups.length; j &lt; m; ++j) &#123;</div><div class="line">      for (var group = groups[j], i = 0, n = group.length, node; i &lt; n; ++i) &#123;</div><div class="line">        //通过call方式调用回调函数</div><div class="line">        if (node = group[i]) callback.call(node, node.__data__, i, group);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="selection-call-function-arguments…"><a href="#selection-call-function-arguments…" class="headerlink" title="selection.call(function[, arguments…])"></a>selection.call(function[, arguments…])</h3><p>将selection和其他参数传入指定函数中执行，并返回当前selection，这和直接链式调用<code>function(selection)</code>相同。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">function selection_call() &#123;</div><div class="line">    var callback = arguments[0];</div><div class="line">    arguments[0] = this;</div><div class="line">    callback.apply(null, arguments);</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h2><p>d3的局部变量可以定义与data独立开来的局部状态，它的作用域是dom元素。<br>其构造函数和原型方法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">function Local() &#123;</div><div class="line">    this._ = &quot;@&quot; + (++nextId).toString(36);</div><div class="line">&#125;</div><div class="line"></div><div class="line">Local.prototype = local.prototype = &#123;</div><div class="line">    constructor: Local,</div><div class="line">    get: function(node) &#123;</div><div class="line">      var id = this._;</div><div class="line">      while (!(id in node)) if (!(node = node.parentNode)) return;</div><div class="line">      return node[id];</div><div class="line">    &#125;,</div><div class="line">    set: function(node, value) &#123;</div><div class="line">      return node[this._] = value;</div><div class="line">    &#125;,</div><div class="line">    remove: function(node) &#123;</div><div class="line">      return this._ in node &amp;&amp; delete node[this._];</div><div class="line">    &#125;,</div><div class="line">    toString: function() &#123;</div><div class="line">      return this._;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="web/js/d3-source-code-selections/" data-title="d3.js源码分析——Selections" data-url="http://arlendp.me/web/js/d3-source-code-selections/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'arlendp'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large orange">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse green"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer cyan darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="https://github.com/arlendp" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright orange-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('green lighten-2');
+
+            
+            // 添加new标签
+            $('').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=57839780" charset="UTF-8"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

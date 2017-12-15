@@ -5,7 +5,7 @@
 # Site
 title: arlendp
 subtitle: arlendp's blog
-description:
+description: 一个分享web前端技术的个人博客
 author: arlendp
 language: zh-CN
 timezone:
@@ -73,7 +73,8 @@ theme: hexo-theme-raytaylorism
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type:
+  type: git
+  repo: https://github.com/arlendp/arlendp.github.io.git
 
 # Search
 search:

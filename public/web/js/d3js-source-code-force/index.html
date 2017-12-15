@@ -1,0 +1,599 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>d3.js源码分析——Force | arlendp&#39;s blog</title>
+    <meta name="author" content="arlendp">
+    
+    <meta name="description" content="一个分享web前端技术的个人博客">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="d3.js源码分析——Force"/>
+    <meta property="og:site_name" content="arlendp"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="arlendp" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="cyan">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">arlendp</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            首页
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            归档
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            分类
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            读书
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            关于
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            搜索
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav cyan darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://tva2.sinaimg.cn/crop.0.0.720.720.180/ba00f58bjw8ewfzppyd46j20k00k03zn.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">arlendp</p>
+                        <p class="desc">Web前端</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    首页
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    归档
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    分类
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    读书
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    关于
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    搜索
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav cyan darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Web开发/">
+                    Web开发 <span class="right">14 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/JS/">
+                    JS <span class="right">12 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/CSS/">
+                    CSS <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-1" collapse-level="1">
+                <a class="no-padding" href="/categories/Web开发/HTML/">
+                    HTML <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/Git/">
+                    Git <span class="right">1 篇</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">搜索</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper cyan">
+        <span class="breadcrumb">当前位置（分类目录）</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/Web开发/">Web开发</a><a class="breadcrumb" href="/categories/Web开发/JS/">JS</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>d3.js源码分析——Force</h1>
+    
+
+
+            </div>
+            <time class="orange-link-context" datetime="2016-09-17T16:00:00.000Z"><a href="/web/js/d3js-source-code-force/">2016-09-18</a></time>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/Web开发/" class="chip orange">Web开发</a>
+        
+            <a href="/tags/D3-js/" class="chip orange">D3.js</a>
+        
+    </div>
+
+
+            <div class="toc orange-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Simulation"><span class="section table-of-contents-text">Simulation</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-forceSimulation"><span class="section table-of-contents-text">d3.forceSimulation</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Force"><span class="section table-of-contents-text">Force</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-forceLink"><span class="section table-of-contents-text">d3.forceLink</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-forceCenter"><span class="section table-of-contents-text">d3.forceCenter</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-forceCollide"><span class="section table-of-contents-text">d3.forceCollide</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-forceManyBody"><span class="section table-of-contents-text">d3.forceManyBody</span></a></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#d3-forceX"><span class="section table-of-contents-text">d3.forceX</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry orange-link-context">
+                <p>该模块用于模拟在粒子上的物理作用力，常用于网络图和层级图。<br><a id="more"></a></p>
+<h2 id="Simulation"><a href="#Simulation" class="headerlink" title="Simulation"></a>Simulation</h2><h3 id="d3-forceSimulation"><a href="#d3-forceSimulation" class="headerlink" title="d3.forceSimulation"></a>d3.forceSimulation</h3><p>根据指定的nodes值创建一个新的simulation，此时还没有设置force函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div></pre></td><td class="code"><pre><div class="line">//d3.forceSimulation用于设置节点和相关参数</div><div class="line">function simulation(nodes) &#123;</div><div class="line">    var simulation,</div><div class="line">        //alpha表示simulation当前的状态</div><div class="line">        alpha = 1,</div><div class="line">        alphaMin = 0.001,</div><div class="line">        //alphaDecay表示alpha每次的衰减率</div><div class="line">        alphaDecay = 1 - Math.pow(alphaMin, 1 / 300),</div><div class="line">        //alphaTarget表示最终要稳定时的状态</div><div class="line">        alphaTarget = 0,</div><div class="line">        //velocityDecay表示速度的衰退率</div><div class="line">        velocityDecay = 0.6,</div><div class="line">        //用于存储force函数</div><div class="line">        forces = map$1(),</div><div class="line">        stepper = timer(step),</div><div class="line">        //simulation包含以下两种类型的事件</div><div class="line">        event = dispatch(&quot;tick&quot;, &quot;end&quot;);</div><div class="line"></div><div class="line">    if (nodes == null) nodes = [];</div><div class="line"></div><div class="line">    function step() &#123;</div><div class="line">      tick();</div><div class="line">      //自定义的tick函数，在这里被调用</div><div class="line">      event.call(&quot;tick&quot;, simulation);</div><div class="line">      //当alpha小于临界值即alphaMin时，停止计时</div><div class="line">      if (alpha &lt; alphaMin) &#123;</div><div class="line">        stepper.stop();</div><div class="line">        //自定义的end函数在这里调用</div><div class="line">        event.call(&quot;end&quot;, simulation);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function tick() &#123;</div><div class="line">      var i, n = nodes.length, node;</div><div class="line"></div><div class="line">      alpha += (alphaTarget - alpha) * alphaDecay;</div><div class="line">      //alpha用于force中对速度vx和vy进行设置</div><div class="line">      forces.each(function(force) &#123;</div><div class="line">        force(alpha);</div><div class="line">      &#125;);</div><div class="line"></div><div class="line">      for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">        node = nodes[i];</div><div class="line">        //fx和fy是node的固定点，如果设置了该属性则node会固定在该位置</div><div class="line">        //这里简化了物理作用力，将当前位置坐标加上当前速度得到下一步的位置坐标</div><div class="line">        if (node.fx == null) node.x += node.vx *= velocityDecay;</div><div class="line">        else node.x = node.fx, node.vx = 0;</div><div class="line">        if (node.fy == null) node.y += node.vy *= velocityDecay;</div><div class="line">        else node.y = node.fy, node.vy = 0;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    //对nodes进行处理</div><div class="line">    function initializeNodes() &#123;</div><div class="line">      for (var i = 0, n = nodes.length, node; i &lt; n; ++i) &#123;</div><div class="line">        node = nodes[i], node.index = i;</div><div class="line">        //如果node中不含x、 y值，则按默认方法计算。</div><div class="line">        if (isNaN(node.x) || isNaN(node.y)) &#123;</div><div class="line">          var radius = initialRadius * Math.sqrt(i), angle = i * initialAngle;</div><div class="line">          node.x = radius * Math.cos(angle);</div><div class="line">          node.y = radius * Math.sin(angle);</div><div class="line">        &#125;</div><div class="line">        //如果不含vx、vy值，则默认为0。</div><div class="line">        if (isNaN(node.vx) || isNaN(node.vy)) &#123;</div><div class="line">          node.vx = node.vy = 0;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function initializeForce(force) &#123;</div><div class="line">      if (force.initialize) force.initialize(nodes);</div><div class="line">      return force;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    initializeNodes();</div><div class="line"></div><div class="line">    return simulation = &#123;</div><div class="line">      tick: tick,</div><div class="line"></div><div class="line">      restart: function() &#123;</div><div class="line">        return stepper.restart(step), simulation;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      stop: function() &#123;</div><div class="line">        return stepper.stop(), simulation;</div><div class="line">      &#125;,</div><div class="line">      //设置nodes时会对所有的force进行初始化</div><div class="line">      nodes: function(_) &#123;</div><div class="line">        return arguments.length ? (nodes = _, initializeNodes(), forces.each(initializeForce), simulation) : nodes;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      alpha: function(_) &#123;</div><div class="line">        return arguments.length ? (alpha = +_, simulation) : alpha;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      alphaMin: function(_) &#123;</div><div class="line">        return arguments.length ? (alphaMin = +_, simulation) : alphaMin;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      alphaDecay: function(_) &#123;</div><div class="line">        return arguments.length ? (alphaDecay = +_, simulation) : +alphaDecay;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      alphaTarget: function(_) &#123;</div><div class="line">        return arguments.length ? (alphaTarget = +_, simulation) : alphaTarget;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      velocityDecay: function(_) &#123;</div><div class="line">        return arguments.length ? (velocityDecay = 1 - _, simulation) : 1 - velocityDecay;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      force: function(name, _) &#123;</div><div class="line">        return arguments.length &gt; 1 ? ((_ == null ? forces.remove(name) : forces.set(name, initializeForce(_))), simulation) : forces.get(name);</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      find: function(x, y, radius) &#123;</div><div class="line">        var i = 0,</div><div class="line">            n = nodes.length,</div><div class="line">            dx,</div><div class="line">            dy,</div><div class="line">            d2,</div><div class="line">            node,</div><div class="line">            closest;</div><div class="line"></div><div class="line">        if (radius == null) radius = Infinity;</div><div class="line">        else radius *= radius;</div><div class="line"></div><div class="line">        for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">          node = nodes[i];</div><div class="line">          dx = x - node.x;</div><div class="line">          dy = y - node.y;</div><div class="line">          d2 = dx * dx + dy * dy;</div><div class="line">          if (d2 &lt; radius) closest = node, radius = d2;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return closest;</div><div class="line">      &#125;,</div><div class="line"></div><div class="line">      on: function(name, _) &#123;</div><div class="line">        return arguments.length &gt; 1 ? (event.on(name, _), simulation) : event.on(name);</div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述方法对nodes进行处理，计算其x和y值以及初始化vx、vy值，其中很重要的一部分是force函数，该函数用来模拟物理作用力来改变nodes的位置和速度。</p>
+<h2 id="Force"><a href="#Force" class="headerlink" title="Force"></a>Force</h2><p>force函数在定时器执行过程中会重复调用，用于控制nodes的坐标和速度。</p>
+<h3 id="d3-forceLink"><a href="#d3-forceLink" class="headerlink" title="d3.forceLink"></a>d3.forceLink</h3><p>forceLink主要用于nodes之间的联系即links，每个link会将两个不同的node以source和target的方式进行连接，同时内部会对vx、vy进行调整。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div></pre></td><td class="code"><pre><div class="line">/* d3.forceLink</div><div class="line">   * force用于控制节点之间的联系</div><div class="line">   * !将于节点相连的link的数量记作该节点的权值</div><div class="line">   */</div><div class="line">function link(links) &#123;</div><div class="line">    var id = index$2,</div><div class="line">        strength = defaultStrength,</div><div class="line">        strengths,</div><div class="line">        //默认link的长度都为30</div><div class="line">        distance = constant$6(30),</div><div class="line">        distances,</div><div class="line">        nodes,</div><div class="line">        //count记录跟每个节点有关联的节点数量，即该节点的权值</div><div class="line">        count,</div><div class="line">        //bias存储每条link对应的source的权值与source和target权值和的比值</div><div class="line">        bias,</div><div class="line">        iterations = 1;</div><div class="line"></div><div class="line">    if (links == null) links = [];</div><div class="line">    //默认计算link的强度的方法</div><div class="line">    function defaultStrength(link) &#123;</div><div class="line">      return 1 / Math.min(count[link.source.index], count[link.target.index]);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function force(alpha) &#123;</div><div class="line">      for (var k = 0, n = links.length; k &lt; iterations; ++k) &#123;</div><div class="line">        for (var i = 0, link, source, target, x, y, l, b; i &lt; n; ++i) &#123;</div><div class="line">          link = links[i], source = link.source, target = link.target;</div><div class="line">          x = target.x + target.vx - source.x - source.vx || jiggle();</div><div class="line">          y = target.y + target.vy - source.y - source.vy || jiggle();</div><div class="line">          //target和source的距离为l</div><div class="line">          l = Math.sqrt(x * x + y * y);</div><div class="line">          l = (l - distances[i]) / l * alpha * strengths[i];</div><div class="line">          x *= l, y *= l;</div><div class="line">          //对target和source的速度进行调整</div><div class="line">          target.vx -= x * (b = bias[i]);</div><div class="line">          target.vy -= y * b;</div><div class="line">          source.vx += x * (b = 1 - b);</div><div class="line">          source.vy += y * b;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function initialize() &#123;</div><div class="line">      if (!nodes) return;</div><div class="line"></div><div class="line">      var i,</div><div class="line">          n = nodes.length,</div><div class="line">          m = links.length,</div><div class="line">          //对nodes中每个值设置id作为键值</div><div class="line">          nodeById = map$1(nodes, id),</div><div class="line">          link;</div><div class="line"></div><div class="line">      for (i = 0, count = new Array(n); i &lt; n; ++i) &#123;</div><div class="line">        count[i] = 0;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      for (i = 0; i &lt; m; ++i) &#123;</div><div class="line">        link = links[i], link.index = i;</div><div class="line">        //将link中的source和target值作为id来查找node</div><div class="line">        if (typeof link.source !== &quot;object&quot;) link.source = nodeById.get(link.source);</div><div class="line">        if (typeof link.target !== &quot;object&quot;) link.target = nodeById.get(link.target);</div><div class="line">        ++count[link.source.index], ++count[link.target.index];</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      for (i = 0, bias = new Array(m); i &lt; m; ++i) &#123;</div><div class="line">        link = links[i], bias[i] = count[link.source.index] / (count[link.source.index] + count[link.target.index]);</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      strengths = new Array(m), initializeStrength();</div><div class="line">      distances = new Array(m), initializeDistance();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function initializeStrength() &#123;</div><div class="line">      if (!nodes) return;</div><div class="line"></div><div class="line">      for (var i = 0, n = links.length; i &lt; n; ++i) &#123;</div><div class="line">        strengths[i] = +strength(links[i], i, links);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function initializeDistance() &#123;</div><div class="line">      if (!nodes) return;</div><div class="line"></div><div class="line">      for (var i = 0, n = links.length; i &lt; n; ++i) &#123;</div><div class="line">        distances[i] = +distance(links[i], i, links);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    force.initialize = function(_) &#123;</div><div class="line">      nodes = _;</div><div class="line">      initialize();</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.links = function(_) &#123;</div><div class="line">      return arguments.length ? (links = _, initialize(), force) : links;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.id = function(_) &#123;</div><div class="line">      return arguments.length ? (id = _, force) : id;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.iterations = function(_) &#123;</div><div class="line">      return arguments.length ? (iterations = +_, force) : iterations;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.strength = function(_) &#123;</div><div class="line">      return arguments.length ? (strength = typeof _ === &quot;function&quot; ? _ : constant$6(+_), initializeStrength(), force) : strength;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.distance = function(_) &#123;</div><div class="line">      return arguments.length ? (distance = typeof _ === &quot;function&quot; ? _ : constant$6(+_), initializeDistance(), force) : distance;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return force;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-forceCenter"><a href="#d3-forceCenter" class="headerlink" title="d3.forceCenter"></a>d3.forceCenter</h3><p>forceCenter根据设置的(x, y)坐标而将node的坐标向其移动。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">//d3.forceCenter</div><div class="line">function center$1(x, y) &#123;</div><div class="line">    var nodes;</div><div class="line"></div><div class="line">    if (x == null) x = 0;</div><div class="line">    if (y == null) y = 0;</div><div class="line"></div><div class="line">    function force() &#123;</div><div class="line">      var i,</div><div class="line">          n = nodes.length,</div><div class="line">          node,</div><div class="line">          sx = 0,</div><div class="line">          sy = 0;</div><div class="line"></div><div class="line">      for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">        node = nodes[i], sx += node.x, sy += node.y;</div><div class="line">      &#125;</div><div class="line">      //这里简化了粒子的质量，认为都相等，通过sx / n和sy / n得到所有粒子的重心</div><div class="line">      for (sx = sx / n - x, sy = sy / n - y, i = 0; i &lt; n; ++i) &#123;</div><div class="line">        //将所有粒子的坐标向中心点靠近</div><div class="line">        node = nodes[i], node.x -= sx, node.y -= sy;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    force.initialize = function(_) &#123;</div><div class="line">      nodes = _;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.x = function(_) &#123;</div><div class="line">      return arguments.length ? (x = +_, force) : x;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.y = function(_) &#123;</div><div class="line">      return arguments.length ? (y = +_, force) : y;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return force;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-forceCollide"><a href="#d3-forceCollide" class="headerlink" title="d3.forceCollide"></a>d3.forceCollide</h3><p>forceCollide方法将nodes不再看做一个点而是一个指定半径的圆形，防止不同的节点发生碰撞即要满足两个圆心的距离大于两个圆形半径之和。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div></pre></td><td class="code"><pre><div class="line">//d3.forceCollide</div><div class="line">function collide(radius) &#123;</div><div class="line">    var nodes,</div><div class="line">        radii,</div><div class="line">        strength = 1,</div><div class="line">        iterations = 1;</div><div class="line">    //如果没有设置radius，则默认为1</div><div class="line">    if (typeof radius !== &quot;function&quot;) radius = constant$6(radius == null ? 1 : +radius);</div><div class="line"></div><div class="line">    function force() &#123;</div><div class="line">      var i, n = nodes.length,</div><div class="line">          tree,</div><div class="line">          node,</div><div class="line">          xi,</div><div class="line">          yi,</div><div class="line">          ri,</div><div class="line">          ri2;</div><div class="line"></div><div class="line">      for (var k = 0; k &lt; iterations; ++k) &#123;</div><div class="line">        //visitAfter函数使得对每个node都执行prepare。这里采用后续遍历的方法，因为只有知道了孩子节点的半径才能确定根节点半径</div><div class="line">        tree = quadtree(nodes, x$1, y$1).visitAfter(prepare);</div><div class="line">        //依次访问所有的node节点，判断其他节点是否可能与其重叠</div><div class="line">        for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">          node = nodes[i];</div><div class="line">          ri = radii[i], ri2 = ri * ri;</div><div class="line">          xi = node.x + node.vx;</div><div class="line">          yi = node.y + node.vy;</div><div class="line">          tree.visit(apply);</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">      //这里用于对重叠的节点进行处理，如果当前节点为根节点则判断node是否与该根节点的范围有重叠，如果没有则返回true，不再访问其子节点；否则继续访问其子节点。</div><div class="line">      //如果当前节点为叶子节点，</div><div class="line">      function apply(quad, x0, y0, x1, y1) &#123;</div><div class="line">        var data = quad.data, rj = quad.r, r = ri + rj;</div><div class="line">        if (data) &#123;</div><div class="line">          // 只比较index大于i的，可防止重复比较</div><div class="line">          if (data.index &gt; i) &#123;</div><div class="line">            var x = xi - data.x - data.vx,</div><div class="line">                y = yi - data.y - data.vy,</div><div class="line">                l = x * x + y * y;</div><div class="line">            if (l &lt; r * r) &#123;</div><div class="line">              if (x === 0) x = jiggle(), l += x * x;</div><div class="line">              if (y === 0) y = jiggle(), l += y * y;</div><div class="line">              l = (r - (l = Math.sqrt(l))) / l * strength;</div><div class="line">              //根据两个节点间的距离和两个节点的半径对node和data的速度进行调整</div><div class="line">              //TODO: 为什么这样调整？？？</div><div class="line">              node.vx += (x *= l) * (r = (rj *= rj) / (ri2 + rj));</div><div class="line">              node.vy += (y *= l) * r;</div><div class="line">              data.vx -= x * (r = 1 - r);</div><div class="line">              data.vy -= y * r;</div><div class="line">            &#125;</div><div class="line">          &#125;</div><div class="line">          return;</div><div class="line">        &#125;</div><div class="line">        return x0 &gt; xi + r || x1 &lt; xi - r || y0 &gt; yi + r || y1 &lt; yi - r;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    //为所有节点设置半径</div><div class="line">    function prepare(quad) &#123;</div><div class="line">      if (quad.data) return quad.r = radii[quad.data.index];</div><div class="line">      //quad是一个数组，即quad不是叶子节点时，将其所有子节点的最大半径复制给quad.r</div><div class="line">      for (var i = quad.r = 0; i &lt; 4; ++i) &#123;</div><div class="line">        if (quad[i] &amp;&amp; quad[i].r &gt; quad.r) &#123;</div><div class="line">          quad.r = quad[i].r;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    //初始化时通过radius函数处理nodes得到每个node的半径</div><div class="line">    force.initialize = function(_) &#123;</div><div class="line">      var i, n = (nodes = _).length; radii = new Array(n);</div><div class="line">      for (i = 0; i &lt; n; ++i) radii[i] = +radius(nodes[i], i, nodes);</div><div class="line">    &#125;;</div><div class="line">    //iteration值越大，node节点重叠情况就会越小</div><div class="line">    force.iterations = function(_) &#123;</div><div class="line">      return arguments.length ? (iterations = +_, force) : iterations;</div><div class="line">    &#125;;</div><div class="line">    //strength用于在两个节点重叠时调整节点的速度</div><div class="line">    force.strength = function(_) &#123;</div><div class="line">      return arguments.length ? (strength = +_, force) : strength;</div><div class="line">    &#125;;</div><div class="line">    //设置节点的获取半径的函数</div><div class="line">    force.radius = function(_) &#123;</div><div class="line">      return arguments.length ? (radius = typeof _ === &quot;function&quot; ? _ : constant$6(+_), force) : radius;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return force;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-forceManyBody"><a href="#d3-forceManyBody" class="headerlink" title="d3.forceManyBody"></a>d3.forceManyBody</h3><p>用于模拟所有粒子间的作用力，例如模拟重力或者静电力。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div></pre></td><td class="code"><pre><div class="line">//d3.forceManyBody</div><div class="line">function manyBody() &#123;</div><div class="line">    var nodes,</div><div class="line">        node,</div><div class="line">        alpha,</div><div class="line">        //当strength为正值时粒子间会互相吸引，当为负值时粒子间会互相排斥</div><div class="line">        //在这里表现为当strength为正值时，两个互相作用的粒子速度会增加，互相靠近；为负值时，两个粒子速度减小，互相远离。</div><div class="line">        strength = constant$6(-30),</div><div class="line">        strengths,</div><div class="line">        distanceMin2 = 1,</div><div class="line">        distanceMax2 = Infinity,</div><div class="line">        //theta用于判断距离远近而采取不同的方法对粒子的速度进行处理</div><div class="line">        theta2 = 0.81;</div><div class="line"></div><div class="line">    function force(_) &#123;</div><div class="line">      var i, n = nodes.length, tree = quadtree(nodes, x$2, y$2).visitAfter(accumulate);</div><div class="line">      for (alpha = _, i = 0; i &lt; n; ++i) node = nodes[i], tree.visit(apply);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function initialize() &#123;</div><div class="line">      if (!nodes) return;</div><div class="line">      var i, n = nodes.length;</div><div class="line">      strengths = new Array(n);</div><div class="line">      for (i = 0; i &lt; n; ++i) strengths[i] = +strength(nodes[i], i, nodes);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function accumulate(quad) &#123;</div><div class="line">      var strength = 0, q, c, x, y, i;</div><div class="line"></div><div class="line">      // 对于根节点，根据其子节点来计算</div><div class="line">      if (quad.length) &#123;</div><div class="line">        for (x = y = i = 0; i &lt; 4; ++i) &#123;</div><div class="line">          if ((q = quad[i]) &amp;&amp; (c = q.value)) &#123;</div><div class="line">            strength += c, x += c * q.x, y += c * q.y;</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">        quad.x = x / strength;</div><div class="line">        quad.y = y / strength;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      // 对于叶子节点，根据其是否有相同节点来计算strength值</div><div class="line">      else &#123;</div><div class="line">        q = quad;</div><div class="line">        q.x = q.data.x;</div><div class="line">        q.y = q.data.y;</div><div class="line">        do strength += strengths[q.data.index];</div><div class="line">        while (q = q.next);</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      quad.value = strength;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function apply(quad, x1, _, x2) &#123;</div><div class="line">      if (!quad.value) return true;</div><div class="line"></div><div class="line">      var x = quad.x - node.x,</div><div class="line">          y = quad.y - node.y,</div><div class="line">          w = x2 - x1,</div><div class="line">          l = x * x + y * y;</div><div class="line"></div><div class="line">      // 如果quad和node间的距离较远则根据value、alpha和l来调整node的速度</div><div class="line">      if (w * w / theta2 &lt; l) &#123;</div><div class="line">        if (l &lt; distanceMax2) &#123;</div><div class="line">          if (x === 0) x = jiggle(), l += x * x;</div><div class="line">          if (y === 0) y = jiggle(), l += y * y;</div><div class="line">          if (l &lt; distanceMin2) l = Math.sqrt(distanceMin2 * l);</div><div class="line">          node.vx += x * quad.value * alpha / l;</div><div class="line">          node.vy += y * quad.value * alpha / l;</div><div class="line">        &#125;</div><div class="line">        return true;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      // 如果quad为根节点则返回去访问其子节点</div><div class="line">      else if (quad.length || l &gt;= distanceMax2) return;</div><div class="line">      //quad和node相同时不会执行以下过程</div><div class="line">      //当quad和node间距离较近时，同时要考虑strength来调整node的速度</div><div class="line">      </div><div class="line">      if (quad.data !== node || quad.next) &#123;</div><div class="line">        if (x === 0) x = jiggle(), l += x * x;</div><div class="line">        if (y === 0) y = jiggle(), l += y * y;</div><div class="line">        if (l &lt; distanceMin2) l = Math.sqrt(distanceMin2 * l);</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      do if (quad.data !== node) &#123;</div><div class="line">        w = strengths[quad.data.index] * alpha / l;</div><div class="line">        node.vx += x * w;</div><div class="line">        node.vy += y * w;</div><div class="line">      &#125; while (quad = quad.next);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    force.initialize = function(_) &#123;</div><div class="line">      nodes = _;</div><div class="line">      initialize();</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.strength = function(_) &#123;</div><div class="line">      return arguments.length ? (strength = typeof _ === &quot;function&quot; ? _ : constant$6(+_), initialize(), force) : strength;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.distanceMin = function(_) &#123;</div><div class="line">      return arguments.length ? (distanceMin2 = _ * _, force) : Math.sqrt(distanceMin2);</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.distanceMax = function(_) &#123;</div><div class="line">      return arguments.length ? (distanceMax2 = _ * _, force) : Math.sqrt(distanceMax2);</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.theta = function(_) &#123;</div><div class="line">      return arguments.length ? (theta2 = _ * _, force) : Math.sqrt(theta2);</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return force;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="d3-forceX"><a href="#d3-forceX" class="headerlink" title="d3.forceX"></a>d3.forceX</h3><p>使所有的节点向指定的x坐标处靠近。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">//d3.forceX</div><div class="line">function x$3(x) &#123;</div><div class="line">    var strength = constant$6(0.1),</div><div class="line">        nodes,</div><div class="line">        strengths,</div><div class="line">        xz;</div><div class="line"></div><div class="line">    if (typeof x !== &quot;function&quot;) x = constant$6(x == null ? 0 : +x);</div><div class="line"></div><div class="line">    function force(alpha) &#123;</div><div class="line">      for (var i = 0, n = nodes.length, node; i &lt; n; ++i) &#123;</div><div class="line">        //通过xz和strength来改变node的x轴方向的速度，使得节点像xz处靠近。strength的值越大，node的速度改变的越快，即会更快的到达指定坐标位置而趋于稳定</div><div class="line">        node = nodes[i], node.vx += (xz[i] - node.x) * strengths[i] * alpha;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    function initialize() &#123;</div><div class="line">      if (!nodes) return;</div><div class="line">      var i, n = nodes.length;</div><div class="line">      strengths = new Array(n);</div><div class="line">      xz = new Array(n);</div><div class="line">      for (i = 0; i &lt; n; ++i) &#123;</div><div class="line">        //对每个node分别计算x坐标存入xz数组中，同时计算strength值</div><div class="line">        strengths[i] = isNaN(xz[i] = +x(nodes[i], i, nodes)) ? 0 : +strength(nodes[i], i, nodes);</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    force.initialize = function(_) &#123;</div><div class="line">      nodes = _;</div><div class="line">      initialize();</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.strength = function(_) &#123;</div><div class="line">      return arguments.length ? (strength = typeof _ === &quot;function&quot; ? _ : constant$6(+_), initialize(), force) : strength;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    force.x = function(_) &#123;</div><div class="line">      return arguments.length ? (x = typeof _ === &quot;function&quot; ? _ : constant$6(+_), initialize(), force) : x;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    return force;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+    <section id="comment">
+        <div class="card">
+            <div class="card-content">
+                <!-- Duoshuo Comment BEGIN -->
+                <div class="ds-thread" data-thread-key="web/js/d3js-source-code-force/" data-title="d3.js源码分析——Force" data-url="http://arlendp.me/web/js/d3js-source-code-force/"></div>
+
+                <script type="text/javascript">
+                    console.log(document.querySelector('.ds-thread'));
+                    var duoshuoQuery = {
+                        short_name: 'arlendp'
+                    };
+                    (function() {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:'
+                            ? 'https:'
+                            : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- Duoshuo Comment END -->
+            </div>
+        </div>
+    </section>
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large orange">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect cyan" title="回到顶部"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse green"  data-activates="main-menu" title="menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer cyan darken-1">
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="social-group col m3 s12">
+                <h5 class="white-text">社交</h5>
+                
+                    <a class="social-link" href="https://github.com/arlendp" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+            </div>
+            
+
+            
+            <div class="col m9 s12">
+                <h5 class="white-text">友情链接</h5>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright orange-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">本博客由 <a href="https://hexo.io">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('green lighten-2');
+
+            
+            // 添加new标签
+            $('').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "search.xml";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword orange lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=57839780" charset="UTF-8"></script>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>
